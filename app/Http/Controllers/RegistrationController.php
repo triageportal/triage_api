@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\User;
 use Carbon\Carbon;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Exception;
+use Tymon\JWTAuth\Facades\JWTAuth; 
 
 class RegistrationController extends Controller
 {
@@ -57,7 +58,7 @@ class RegistrationController extends Controller
     
                     return "1";
 
-        }catch(exception $e){
+        }catch(Exception $e){
 
             return "0";
 
@@ -106,7 +107,7 @@ class RegistrationController extends Controller
     
                     return "1";
 
-        }catch(exceptiom $e){
+        }catch(Exception $e){
 
             return "0";
 
