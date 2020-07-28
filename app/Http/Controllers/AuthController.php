@@ -22,7 +22,7 @@ class AuthController extends Controller
 
 
     /**
-     * Get a JWT via given credentials.
+     * Get a JWT via given credentials.//git test
      *
      * @return \Illuminate\Http\JsonResponse
      */
