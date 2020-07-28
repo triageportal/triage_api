@@ -48,7 +48,7 @@ protected $table = 'users';
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'registration_hash', 'role'
     ];
 
     /**
