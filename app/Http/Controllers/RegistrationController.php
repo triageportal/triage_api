@@ -9,6 +9,8 @@ use App\User;
 use Carbon\Carbon;
 use Exception;
 use Tymon\JWTAuth\Facades\JWTAuth; 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendLink;
 
 class RegistrationController extends Controller
 {
@@ -19,7 +21,7 @@ class RegistrationController extends Controller
 
     public function preRegister(Request $request){
 
-        try{
+        
 
             $users = new User();
             $Carbon = new Carbon();
@@ -44,25 +46,22 @@ class RegistrationController extends Controller
     
                 $user = JWTAuth::parseToken()->toUser();
     
-                    $users -> first_name = $request['firstName'];
-                    $users -> last_name = $request['lastName'];
-                    $users -> email = $request['email'];   
+                    $users -> first_name = $firstName;
+                    $users -> last_name = $lastName;
+                    $users -> email = $email;   
                     $users -> password = NULL;              
-                    $users -> role = $request['access_type']; 
-                    $users -> access_type = $request['access_type'];               
+                    $users -> role = $access_type; 
+                    $users -> access_type = $access_type;               
                     $users -> hospital_id = $user -> hospital_id;
                     $users -> registration_hash = $registrationHash;
                     $users -> active = 0;
     
                     $users -> save();
+
+                    $this -> sendMail($email, $user->$registrationHash);
     
                     return "1";
-
-        }catch(Exception $e){
-
-            return "0";
-
-        }
+       
 
     }
 
@@ -72,7 +71,7 @@ class RegistrationController extends Controller
         $users = new User();
 
 
-        try{
+       
 
             $request->validate([
                 'firstName' => 'required|max:50',
@@ -107,18 +106,18 @@ class RegistrationController extends Controller
     
                     return "1";
 
-        }catch(Exception $e){
-
-            return "0";
-
-        }
+       
        
 
 
     }
 
 
+public function sendMail($email, $link){
 
+    Mail::to($email)->send(new SendLink($link));
+
+}
 
 
 
