@@ -56,8 +56,7 @@ class RegistrationController extends Controller
                     $users -> registration_hash = $registrationHash;
                     $users -> active = 0;
     
-                    //$users -> save();
-
+                    $users -> save();
                     
                     $this -> sendMail($user->first_name, $email, $registrationHash);
     
@@ -78,7 +77,7 @@ class RegistrationController extends Controller
                 'firstName' => 'required|max:50',
                 'lastName' => 'required|max:50',
                 'email' => 'required|unique:users|email|max:50',
-                'password' => "required|regex: /^(?=.{1,})(?=.*[1-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[(!@#$%^&*()_+|~\- =\`{}[\]:”;'<>?,.\/, )])(?!.*(.)\1{2,})(?!.*\s).+$/|max:32|min:8"                 
+                'password' => "required|regex: /^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:32|min:8"                 
                    
             ]);
 
@@ -145,7 +144,7 @@ public function completeRegistration(Request $request){
 
     $request-> validate([
         'registrationHash' => 'required',
-        'password' => "required|regex: /^(?=.{1,})(?=.*[1-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[(!@#$%^&*()_+|~\- =\`{}[\]:”;'<>?,.\/, )])(?!.*(.)\1{2,})(?!.*\s).+$/|max:32|min:8"  
+        'password' => "required|regex: /^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:32|min:8"  
     ]);
 
     $registrationHash = $request['registrationHash'];
@@ -157,11 +156,13 @@ public function completeRegistration(Request $request){
 
         if(isset($result)){
 
-            $users -> password = $password;
+            $result -> password = $password;
 
-            $users -> save();
+            $result -> update();                    
 
         }
+
+        return "1";
 
     }catch(exception $e){
 
