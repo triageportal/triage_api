@@ -11,6 +11,7 @@ class SendLink extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $link;
     /**
      * Create a new message instance.
      *
@@ -18,7 +19,7 @@ class SendLink extends Mailable
      */
     public function __construct($link)
     {
-        $this -> link = $link;
+        $this->link = $link;
     }
 
     /**
