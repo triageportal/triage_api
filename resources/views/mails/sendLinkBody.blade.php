@@ -13,7 +13,8 @@
 <h1>Triage Translation</h1>
 <br><br>
 <br><br>
- Click here to complete user registration 
+<a href="http://localhost:444/#/user-setup?id={{$link}}">Click here to complete user registration</a>
+ 
 
 </body>
 
