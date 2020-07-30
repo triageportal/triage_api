@@ -37,3 +37,7 @@ Route::post('/super', 'RegistrationController@preRegister');
 
 //Used to create the first ADMIN user. Admin user is the IT Admin, whoch can create SUPERUSER, MANAGER and REGULAR users.
 Route::post('/createadmin', 'RegistrationController@createAdmin');
+
+Route::post('/validate-registration', 'RegistrationController@validateRegistration');
+
+Route::post('/complete-registration','RegistrationController@completeRegistration');

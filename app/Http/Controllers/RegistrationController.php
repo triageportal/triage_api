@@ -16,7 +16,7 @@ class RegistrationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['createAdmin']]);
+        $this->middleware('auth:api', ['except' => ['createAdmin', 'validateRegistration', 'completeRegistration']]);
     }
 
     public function preRegister(Request $request){
@@ -78,7 +78,7 @@ class RegistrationController extends Controller
                 'firstName' => 'required|max:50',
                 'lastName' => 'required|max:50',
                 'email' => 'required|unique:users|email|max:50',
-                'password' => "required|regex: /^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:32|min:8"                
+                'password' => "required|regex: /^(?=.{1,})(?=.*[1-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[(!@#$%^&*()_+|~\- =\`{}[\]:”;'<>?,.\/, )])(?!.*(.)\1{2,})(?!.*\s).+$/|max:32|min:8"                 
                    
             ]);
 
@@ -112,6 +112,67 @@ class RegistrationController extends Controller
 
 
     }
+
+
+public function validateRegistration(Request $request){
+
+        $users = new User();
+
+        $request-> validate([
+            'registrationHash' => 'required'
+        ]);
+
+        $registrationHash =  $request['registrationHash'];
+       
+
+        try{
+
+        $result = $users::where('registration_hash', $registrationHash)->firstOrFail();
+
+        return $result;  
+
+        }catch(exception $e){
+
+            return "0";
+
+        }  
+
+    }
+
+public function completeRegistration(Request $request){
+
+    $users = new User();
+
+    $request-> validate([
+        'registrationHash' => 'required',
+        'password' => "required|regex: /^(?=.{1,})(?=.*[1-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[(!@#$%^&*()_+|~\- =\`{}[\]:”;'<>?,.\/, )])(?!.*(.)\1{2,})(?!.*\s).+$/|max:32|min:8"  
+    ]);
+
+    $registrationHash = $request['registrationHash'];
+    $password = bcrypt($request['password']);
+
+    try{
+
+        $result = $users::where('registration_hash', $registrationHash)->firstOrFail();
+
+        if(isset($result)){
+
+            $users -> password = $password;
+
+            $users -> save();
+
+        }
+
+    }catch(exception $e){
+
+        return "0";
+
+    }
+
+
+
+
+}
 
 
 public function sendMail($requestor, $email, $link){
