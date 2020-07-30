@@ -56,9 +56,10 @@ class RegistrationController extends Controller
                     $users -> registration_hash = $registrationHash;
                     $users -> active = 0;
     
-                    $users -> save();
+                    //$users -> save();
 
-                    $this -> sendMail($email, $user->$registrationHash);
+                    
+                    $this -> sendMail($user->first_name, $email, $registrationHash);
     
                     return "1";
        
@@ -113,9 +114,9 @@ class RegistrationController extends Controller
     }
 
 
-public function sendMail($email, $link){
+public function sendMail($requestor, $email, $link){
 
-    Mail::to($email)->send(new SendLink($link));
+    Mail::to($email)->send(new SendLink($link, $requestor));
 
 }
 

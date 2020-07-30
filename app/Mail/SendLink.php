@@ -12,14 +12,16 @@ class SendLink extends Mailable
     use Queueable, SerializesModels;
 
     public $link;
+    public $requestor;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($link)
+    public function __construct($link, $requestor)
     {
         $this->link = $link;
+        $this->requestor = $requestor;
     }
 
     /**
