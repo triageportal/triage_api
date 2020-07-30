@@ -158,6 +158,8 @@ public function completeRegistration(Request $request){
 
             $result -> password = $password;
 
+            $result -> active = 1;
+
             $result -> update();                    
 
         }
