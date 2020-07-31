@@ -39,7 +39,7 @@ protected $table = 'users';
 
 
     protected $fillable = [
-        'firstName', 'lastName', 'email', 'password', "position", "access_type", "registration_hash", "hospital_id", "active"
+        'first_name', 'last_name', 'email', 'password', "position", "access_type", "registration_hash", "hospital_id", "active"
     ];
 
     /**
@@ -48,7 +48,7 @@ protected $table = 'users';
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'registration_hash', 'role'
+        'password', 'remember_token', 'registration_hash'
     ];
 
     /**
