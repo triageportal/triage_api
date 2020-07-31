@@ -116,7 +116,7 @@ class RegistrationController extends Controller
 public function validateRegistration(Request $request){
 
         $users = new User();
-
+        
         $request-> validate([
             'registrationHash' => 'required'
         ]);
@@ -176,6 +176,34 @@ public function completeRegistration(Request $request){
 
 
 
+
+}
+
+public function userSearchByEmail(Request $request){
+
+    $users = new User();
+
+    $user = Auth::user();
+
+    $request -> validate([
+
+        "keyword" => 'required|min:3'
+    ]);
+
+
+        if($user->access_type != 'REGULAR'){
+
+            $searchKeyword = $request['keyword'];
+
+            $result = $users::where('email', 'like', '%' . $searchKeyword . '%')->get();        
+             
+            return $result; 
+
+        }else{
+
+            return "SEARCH ACCESS DENIED";
+
+        }
 
 }
 
