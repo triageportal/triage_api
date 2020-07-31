@@ -191,11 +191,39 @@ public function userSearchByEmail(Request $request){
 
         if($user->access_type != 'REGULAR'){
 
-            $searchKeyword = $request['keyword'];
+            if($user->access_type == 'ADMIN'){
 
-            $result = $users::where('email', 'like', '%' . $searchKeyword . '%')->get();        
-             
-            return $result; 
+                $searchKeyword = $request['keyword'];
+
+                $result = $users::where('email', 'like', '%' . $searchKeyword . '%') -> get();        
+                 
+                return $result; 
+
+            }else if($user->access_type == 'SUPERUSER'){
+
+                $searchKeyword = $request['keyword'];
+
+                $hospitalId = $user -> hospital_id;
+
+                $result = $users::where('email', 'like', '%' . $searchKeyword . '%') ->where('hospital_id', $hospitalId) ->where('access_type', '!=', 'ADMIN') 
+                -> get();        
+                 
+                return $result; 
+
+            }else if($user->access_type == 'MANAGER'){
+
+                $searchKeyword = $request['keyword'];
+
+                $hospitalId = $user -> hospital_id;
+
+                $result = $users::where('email', 'like', '%' . $searchKeyword . '%') ->where('hospital_id', $hospitalId) ->where('access_type', 'REGULAR') 
+                -> get();        
+                 
+                return $result; 
+
+
+            }
+
 
         }else{
 
