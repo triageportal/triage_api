@@ -43,7 +43,7 @@ class AuthController extends Controller
 
         }else{
 
-            return "suspended";
+            return response()->json('suspended', 401);
 
         }
        
