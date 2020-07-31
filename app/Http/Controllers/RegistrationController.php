@@ -60,7 +60,7 @@ class RegistrationController extends Controller
                     
                     $this -> sendMail($user->first_name, $email, $registrationHash);
     
-                    return "1";
+                    return response()->json('success', 200);
        
 
     }
@@ -128,7 +128,7 @@ public function validateRegistration(Request $request){
 
         $result = $users::where('registration_hash', $registrationHash)->firstOrFail();
 
-        return $result;  
+        return response()->json([ 'user' => $result ]);  
 
         }catch(exception $e){
 
@@ -160,11 +160,13 @@ public function completeRegistration(Request $request){
 
             $result -> active = 1;
 
+            $result -> registration_hash = null;
+
             $result -> update();                    
 
         }
 
-        return "1";
+        return response()->json('success', 200);
 
     }catch(exception $e){
 
