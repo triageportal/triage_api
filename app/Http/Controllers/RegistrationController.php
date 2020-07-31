@@ -31,7 +31,8 @@ class RegistrationController extends Controller
                 'firstName' => 'required|max:50',
                 'lastName' => 'required|max:50',
                 'email' => 'required|unique:users|email|max:50',            
-                'access_type' => 'required'          
+                'access_type' => 'required',
+                'position' => 'required'          
                
             ]);
     
@@ -39,6 +40,7 @@ class RegistrationController extends Controller
             $lastName = filter_var($request['lastName'], FILTER_SANITIZE_STRING);
             $email = filter_var($request['email'], FILTER_SANITIZE_STRING);
             $access_type = filter_var($request['access_type'], FILTER_SANITIZE_STRING);
+            $postion = filter_var($request['position'], FILTER_SANITIZE_STRING);
                   
     
                 $dateTimeStamp = $Carbon::now()->toDateTimeString();
@@ -50,7 +52,7 @@ class RegistrationController extends Controller
                     $users -> last_name = $lastName;
                     $users -> email = $email;   
                     $users -> password = NULL;              
-                    $users -> role = $access_type; 
+                    $users -> position = $postion; 
                     $users -> access_type = $access_type;               
                     $users -> hospital_id = $user -> hospital_id;
                     $users -> registration_hash = $registrationHash;
@@ -96,15 +98,15 @@ class RegistrationController extends Controller
                     $users -> last_name = $lastName;
                     $users -> email = $email;             
                     $users -> password = bcrypt($password);             
-                    $users -> role = "ADMIN";
-                    $users -> access_type = "ADMIN";               
+                    $users -> position = "admin";
+                    $users -> access_type = "admin";               
                     $users -> hospital_id = 0;
                     $users -> active = 1;
                     $users -> registration_hash = NULL;
     
                     $users -> save();
     
-                    return "1";
+                    return response()->json('success', 200);
 
        
        
@@ -132,7 +134,7 @@ public function validateRegistration(Request $request){
 
         }catch(exception $e){
 
-            return "0";
+            return response()->json('error', 401);
 
         }  
 
@@ -170,7 +172,7 @@ public function completeRegistration(Request $request){
 
     }catch(exception $e){
 
-        return "0";
+        return response()->json('error', 401);
 
     }
 
@@ -179,7 +181,7 @@ public function completeRegistration(Request $request){
 
 }
 
-public function userSearchByEmail(Request $request){
+public function userSearch(Request $request){
 
     $users = new User();
 
@@ -191,45 +193,45 @@ public function userSearchByEmail(Request $request){
     ]);
 
 
-        if($user->access_type != 'REGULAR'){
+        if($user->access_type != 'regular'){
 
-            if($user->access_type == 'ADMIN'){
 
-                $searchKeyword = $request['keyword'];
-
-                $result = $users::where('email', 'like', '%' . $searchKeyword . '%') -> get();        
-                 
-                return $result; 
-
-            }else if($user->access_type == 'SUPERUSER'){
+            if($user->access_type == 'admin'){
 
                 $searchKeyword = $request['keyword'];
 
-                $hospitalId = $user -> hospital_id;
-
-                $result = $users::where('email', 'like', '%' . $searchKeyword . '%') ->where('hospital_id', $hospitalId) ->where('access_type', '!=', 'ADMIN') 
-                -> get();        
+                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') -> orWhere('last_name', 'like', '%' . $searchKeyword . '%') -> get();        
                  
-                return $result; 
+                return response()->json($result, 200);
 
-            }else if($user->access_type == 'MANAGER'){
+            }else if($user->access_type == 'manager'){
 
                 $searchKeyword = $request['keyword'];
 
                 $hospitalId = $user -> hospital_id;
 
-                $result = $users::where('email', 'like', '%' . $searchKeyword . '%') ->where('hospital_id', $hospitalId) ->where('access_type', 'REGULAR') 
-                -> get();        
+                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') ->orWhere('last_name', 'like', '%' . $searchKeyword . '%') 
+                -> where('hospital_id', $hospitalId) ->where('access_type', '!=', 'admin') ->where('access_type', '!=', 'superuser') -> get();        
                  
-                return $result; 
+                return response()->json($result, 200);
 
+            }else if($user->access_type == 'superuser'){
+
+                $searchKeyword = $request['keyword'];
+
+                $hospitalId = $user -> hospital_id;
+
+                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') ->orWhere('last_name', 'like', '%' . $searchKeyword . '%') 
+                -> where('hospital_id', $hospitalId) ->where('access_type', '!=', 'admin') -> get();        
+                 
+                return response()->json($result, 200);
 
             }
 
 
         }else{
 
-            return "SEARCH ACCESS DENIED";
+            return response()->json('error', 500);
 
         }
 

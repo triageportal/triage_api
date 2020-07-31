@@ -42,4 +42,4 @@ Route::post('/validate-registration', 'RegistrationController@validateRegistrati
 
 Route::post('/complete-registration','RegistrationController@completeRegistration');
 
-Route::get('/search-by-email','RegistrationController@userSearchByEmail');
+Route::get('/search-user','RegistrationController@userSearch');

@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('first_name', 50);
             $table->string('last_name', 50);
             $table->string('email', 50)->unique();
-            $table->string('role', 50);
+            $table->string('position', 50);
             $table->string('access_type', 50);
             $table->string('registration_hash', 255)->nullable();
             $table->integer('hospital_id');
