@@ -41,3 +41,5 @@ Route::post('/createadmin', 'RegistrationController@createAdmin');
 Route::post('/validate-registration', 'RegistrationController@validateRegistration');
 
 Route::post('/complete-registration','RegistrationController@completeRegistration');
+
+Route::get('/search-by-email','RegistrationController@userSearchByEmail');
