@@ -59,8 +59,11 @@ class RegistrationController extends Controller
                     $users -> active = 0;
     
                     $users -> save();
+
+                    $language = 'ENG';
                     
-                    $this -> sendMail($user->first_name, $email, $registrationHash);
+                    $this -> sendMail($user, $email, $language, $registrationHash);
+                    
     
                     return response()->json('success', 200);
        
@@ -238,9 +241,10 @@ public function userSearch(Request $request){
 }
 
 
-public function sendMail($requestor, $email, $link){
+public function sendMail($user, $email, $language, $link){
 
-    Mail::to($email)->send(new SendLink($link, $requestor));
+    
+    Mail::to($email)->send(new SendLink($link, $user, $language));
 
 }
 

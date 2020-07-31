@@ -20,14 +20,14 @@
                 Requestor:
             </strong>
             </td>
-                {{$requestor}}
+                {{$user -> first_name}} {{$user -> last_name}} 
             <td>
             </td>            
         </tr>
     </tbody>
 </table>
 <br><br>
-<a href="http://localhost:4444/#/user-setup?id={{$link}}">Click here to complete user registration</a>
+<a href="http://localhost:4444/#/user-setup/{{$language}}?id={{$link}}">Click here to complete user registration</a>
  
 
 </body>
