@@ -11,6 +11,7 @@ use Exception;
 use Tymon\JWTAuth\Facades\JWTAuth; 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendLink;
+use App\Mail\SendUpdate;
 
 class RegistrationController extends Controller
 {
@@ -63,7 +64,7 @@ class RegistrationController extends Controller
 
                     $language = 'ENG';
                     
-                    $this -> sendMail($user, $email, $language, $registrationHash);
+                    $this -> sendRegistrationEmail($user, $email, $language, $registrationHash);
                     
     
                     return response()->json('success', 200);
@@ -336,12 +337,15 @@ public function updateUser(Request $request){
 
     try{
 
-        $emailCheck = $users::where('email', $request['email'])->firstOrFail();
+        $emailCheck = $users::where('email', $request['email'])->first();
 
-        if($emailCheck['id'] != $request['id']){
-            $error['errors']['email'][] = 'The email has already been taken.';
-            return response()->json($error, 422);
-    
+        if(isset($emailCheck)){
+        
+            if($emailCheck['id'] != $request['id']){
+                $error['errors']['email'][] = 'The email has already been taken.';
+                return response()->json($error, 422);
+        
+            }
         }
 
         $result = $users::where('id', $request['id'])->firstOrFail();
@@ -357,6 +361,8 @@ public function updateUser(Request $request){
 
         $result -> update();
 
+        $this->sendUpdateEmail($result, $user, $result['email']);
+
         return response()->json("success", 200);
 
     }catch(exception $e){
@@ -368,10 +374,16 @@ public function updateUser(Request $request){
 }
 
 
-public function sendMail($user, $email, $language, $link){
+public function sendRegistrationEmail($user, $email, $language, $link){
 
     
     Mail::to($email)->send(new SendLink($link, $user, $language));
+
+}
+
+public function sendUpdateEmail($users, $user, $email){
+
+    Mail::to($email)->send(new SendUpdate($users, $user));
 
 }
 
