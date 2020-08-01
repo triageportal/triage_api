@@ -57,6 +57,7 @@ class RegistrationController extends Controller
                     $users -> hospital_id = $user -> hospital_id;
                     $users -> registration_hash = $registrationHash;
                     $users -> active = 0;
+                    $users -> created_by = $user-> id;
     
                     $users -> save();
 
@@ -106,6 +107,7 @@ class RegistrationController extends Controller
                     $users -> hospital_id = 0;
                     $users -> active = 1;
                     $users -> registration_hash = NULL;
+                    $users -> created_by = NULL;
     
                     $users -> save();
     
@@ -205,6 +207,31 @@ public function userSearch(Request $request){
 
                 $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') -> orWhere('last_name', 'like', '%' . $searchKeyword . '%') -> get();        
                  
+                foreach($result as $item){
+
+                    $userid = $item -> created_by;
+
+                    $editorid = $item -> last_edited_by;
+
+                    if($userid != null){
+
+                        $result2 = $users::where('id', $userid) -> firstOrFail();
+    
+                        $item -> created_by = $result2['first_name']." ".$result2['last_name'];
+                        
+                        }
+
+                    if($editorid != null){
+
+                        $result2 = $users::where('id', $editorid) -> firstOrFail();
+    
+                        $item -> last_edited_by = $result2['first_name']." ".$result2['last_name'];
+                        
+                        }
+                    
+                }
+
+
                 return response()->json($result, 200);
 
             }else if($user->access_type == 'manager'){
@@ -216,6 +243,30 @@ public function userSearch(Request $request){
                 $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') ->orWhere('last_name', 'like', '%' . $searchKeyword . '%') 
                 -> where('hospital_id', $hospitalId) ->where('access_type', '!=', 'admin') ->where('access_type', '!=', 'superuser') -> get();        
                  
+                foreach($result as $item){
+
+                    $userid = $item -> created_by;
+
+                    $editorid = $item -> last_edited_by;
+
+                    if($userid != null){
+
+                        $result2 = $users::where('id', $userid) -> firstOrFail();
+    
+                        $item -> created_by = $result2['first_name']." ".$result2['last_name'];
+                        
+                        }
+
+                    if($editorid != null){
+
+                        $result2 = $users::where('id', $editorid) -> firstOrFail();
+    
+                        $item -> last_edited_by = $result2['first_name']." ".$result2['last_name'];
+                        
+                        }
+                    
+                }
+
                 return response()->json($result, 200);
 
             }else if($user->access_type == 'superuser'){
@@ -227,6 +278,30 @@ public function userSearch(Request $request){
                 $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') ->orWhere('last_name', 'like', '%' . $searchKeyword . '%') 
                 -> where('hospital_id', $hospitalId) ->where('access_type', '!=', 'admin') -> get();        
                  
+                foreach($result as $item){
+
+                    $userid = $item -> created_by;
+
+                    $editorid = $item -> last_edited_by;
+
+                    if($userid != null){
+
+                        $result2 = $users::where('id', $userid) -> firstOrFail();
+    
+                        $item -> created_by = $result2['first_name']." ".$result2['last_name'];
+                        
+                        }
+
+                    if($editorid != null){
+
+                        $result2 = $users::where('id', $editorid) -> firstOrFail();
+    
+                        $item -> last_edited_by = $result2['first_name']." ".$result2['last_name'];
+                        
+                        }
+                    
+                }
+                
                 return response()->json($result, 200);
 
             }
@@ -237,6 +312,58 @@ public function userSearch(Request $request){
             return response()->json('error', 500);
 
         }
+
+}
+
+public function updateUser(Request $request){
+
+    $request->validate([
+        'id' => 'required',
+        'first_name' => 'required|max:50',
+        'last_name' => 'required|max:50',
+        'email' => 'required|email|max:50',            
+        'access_type' => 'required',
+        'position' => 'required'             
+    ]);
+
+    foreach($request as $item){
+
+        $item = filter_var($item, FILTER_SANITIZE_STRING);
+
+    }
+
+    $users = new User();   
+
+    try{
+
+        $emailCheck = $users::where('email', $request['email'])->firstOrFail();
+
+        if($emailCheck['id'] != $request['id']){
+    
+            return response()->json('The email has already been taken.', 422);
+    
+        }
+
+        $result = $users::where('id', $request['id'])->firstOrFail();
+
+        $user = Auth::user();       
+
+        $result -> first_name = $request['first_name'];
+        $result -> last_name = $request['last_name'];
+        $result -> email = $request['email'];                 
+        $result -> position = $request['position']; 
+        $result -> access_type = $request['access_type'];               
+        $result -> last_edited_by = $user-> id;
+
+        $result -> update();
+
+        return response()->json("success", 200);
+
+    }catch(exception $e){
+
+        return response()->json('error', 500);
+
+    }
 
 }
 
