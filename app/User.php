@@ -39,7 +39,7 @@ protected $table = 'users';
 
 
     protected $fillable = [
-        'first_name', 'last_name', 'email', 'password', "position", "access_type", "registration_hash", "hospital_id", "active"
+        'first_name', 'last_name', 'email', 'password', "position", "access_type", "registration_hash", "hospital_id", "active", "created_by", "last_edited_by"
     ];
 
     /**
