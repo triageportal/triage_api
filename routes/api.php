@@ -45,7 +45,3 @@ Route::post('/complete-registration','RegistrationController@completeRegistratio
 Route::get('/search-user','RegistrationController@userSearch');
 
 Route::post('/update-user', 'RegistrationController@updateUser');
-
-
-
-
