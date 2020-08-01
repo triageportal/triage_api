@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\SendLink;
 use App\Mail\SendUpdate;
 
-class RegistrationController extends Controller
+class UserController extends Controller
 {
     public function __construct()
     {
@@ -62,6 +62,7 @@ class RegistrationController extends Controller
     
                     $users -> save();
 
+                     //Replace with the actual HOSPITAL langiage once hospital table is ready.
                     $language = 'ENG';
                     
                     $this -> sendRegistrationEmail($user, $email, $language, $registrationHash);
@@ -335,39 +336,124 @@ public function updateUser(Request $request){
 
     $users = new User();   
 
-    try{
+    $result = $users::where('id', $request['id'])->first();
 
-        $emailCheck = $users::where('email', $request['email'])->first();
+    $result -> makeVisible(['password']);
 
-        if(isset($emailCheck)){
-        
-            if($emailCheck['id'] != $request['id']){
-                $error['errors']['email'][] = 'The email has already been taken.';
-                return response()->json($error, 422);
-        
+    if($result['password'] != null && strlen($result['password']) > 0){
+
+        try{
+
+            $emailCheck = $users::where('email', $request['email'])->first();
+    
+            if(isset($emailCheck)){
+            
+                if($emailCheck['id'] != $request['id']){
+
+                    $error['errors']['email'][] = 'The email has already been taken.';
+
+                    return response()->json($error, 422);
+            
+                }
             }
+    
+            $user = Auth::user();       
+    
+            $result -> first_name = $request['first_name'];
+            $result -> last_name = $request['last_name'];
+            $result -> email = $request['email'];                 
+            $result -> position = $request['position']; 
+            $result -> access_type = $request['access_type'];               
+            $result -> last_edited_by = $user-> id;
+    
+            $result -> update();
+    
+            $this->sendUpdateEmail($result, $user, $result['email']);
+    
+            return response()->json("success", 200);
+    
+        }catch(exception $e){
+    
+            return response()->json('error', 500);
+    
+        }
+    }else{
+
+        if($request['email'] == $result['email']){
+
+            try {
+              
+                $user = Auth::user();       
+    
+                $result -> first_name = $request['first_name'];
+                $result -> last_name = $request['last_name'];
+                $result -> email = $request['email'];                 
+                $result -> position = $request['position']; 
+                $result -> access_type = $request['access_type'];               
+                $result -> last_edited_by = $user-> id;
+        
+                $result -> update();
+        
+                return response()->json("success", 200);
+
+            } catch (exception $e) {
+
+                return response()->json('error', 500);
+
+            }        
+
+        }else{
+
+            try {
+              
+                    $emailCheck = $users::where('email', $request['email'])->first();
+            
+                    if(isset($emailCheck)){
+                    
+                        if($emailCheck['id'] != $request['id']){
+                            
+                            $error['errors']['email'][] = 'The email has already been taken.';
+
+                            return response()->json($error, 422);
+                    
+                        }
+                    }
+
+                    $Carbon = new Carbon();
+                    $dateTimeStamp = $Carbon::now()->toDateTimeString();
+                    $registrationHash = bcrypt($request['email'].$dateTimeStamp);
+
+                    $user = JWTAuth::parseToken()->toUser();
+
+                    $result -> first_name = $request['first_name'];
+                    $result -> last_name = $request['last_name'];
+                    $result -> email = $request['email'];                           
+                    $result -> position = $request['position']; 
+                    $result -> access_type = $request['access_type'];               
+                    $result -> hospital_id = $user -> hospital_id;
+                    $result -> registration_hash = $registrationHash;                
+                    $result -> last_edited_by = $user-> id;
+
+                    $result -> update();
+
+                    //Replace with the actual HOSPITAL langiage once hospital table is ready.
+                    $language = 'ENG';
+                    
+                    $this -> sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
+                    
+
+                    return response()->json('success', 200);
+                
+            } catch (exception $e) {
+
+                return response()->json('error', 500);
+
+            }
+
+            
+
         }
 
-        $result = $users::where('id', $request['id'])->firstOrFail();
-
-        $user = Auth::user();       
-
-        $result -> first_name = $request['first_name'];
-        $result -> last_name = $request['last_name'];
-        $result -> email = $request['email'];                 
-        $result -> position = $request['position']; 
-        $result -> access_type = $request['access_type'];               
-        $result -> last_edited_by = $user-> id;
-
-        $result -> update();
-
-        $this->sendUpdateEmail($result, $user, $result['email']);
-
-        return response()->json("success", 200);
-
-    }catch(exception $e){
-
-        return $e;
 
     }
 

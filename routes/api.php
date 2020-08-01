@@ -34,19 +34,19 @@ Route::group([
 
 //Used to create the first ADMIN user. Admin user is the IT Admin, who can create SUPERUSER, MANAGER and REGULAR users. 
 //Disable the rounte after creating the first user.
-Route::post('/createadmin', 'RegistrationController@createAdmin');
+Route::post('/createadmin', 'UserController@createAdmin');
 
 //Creates - Pre registers a new user. Must be accesses by Admin, Superuser or Manager.
-Route::post('/user', 'RegistrationController@preRegister');
+Route::post('/user', 'UserController@preRegister');
 
 //Validates the hash before password update for the new user.
-Route::post('/validate-registration', 'RegistrationController@validateRegistration');
+Route::post('/validate-registration', 'UserController@validateRegistration');
 
 //Competes the registration for the new user.
-Route::post('/complete-registration','RegistrationController@completeRegistration');
+Route::post('/complete-registration','UserController@completeRegistration');
 
 //Search for user info. Must be accesses by Admin, Superuser or Manager.
-Route::get('/user','RegistrationController@userSearch');
+Route::get('/user','UserController@userSearch');
 
 //Update the user profile. Must be accesses by Admin, Superuser or Manager.
-Route::patch('/user', 'RegistrationController@updateUser');
+Route::patch('/user', 'UserController@updateUser');

@@ -11,8 +11,8 @@
 
 <body>
 <h1>User Profile Update Notification</h1>
-<h2>Your user profile has been updated by {{$user -> first_name}}.</h2>
-<h2>Updated user profile details:</h2>
+<h3>Your user profile has been updated by {{$user -> first_name}}.</h3>
+<h3>Updated user profile details:</h3>
 <table>
     <tbody>
         <tr>
