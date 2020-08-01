@@ -28,16 +28,16 @@ class RegistrationController extends Controller
     
            
             $request->validate([
-                'firstName' => 'required|max:50',
-                'lastName' => 'required|max:50',
+                'first_name' => 'required|max:50',
+                'last_name' => 'required|max:50',
                 'email' => 'required|unique:users|email|max:50',            
                 'access_type' => 'required',
                 'position' => 'required'          
                
             ]);
     
-            $firstName = filter_var($request['firstName'], FILTER_SANITIZE_STRING);
-            $lastName = filter_var($request['lastName'], FILTER_SANITIZE_STRING);
+            $firstName = filter_var($request['first_name'], FILTER_SANITIZE_STRING);
+            $lastName = filter_var($request['last_name'], FILTER_SANITIZE_STRING);
             $email = filter_var($request['email'], FILTER_SANITIZE_STRING);
             $access_type = filter_var($request['access_type'], FILTER_SANITIZE_STRING);
             $postion = filter_var($request['position'], FILTER_SANITIZE_STRING);
@@ -339,8 +339,8 @@ public function updateUser(Request $request){
         $emailCheck = $users::where('email', $request['email'])->firstOrFail();
 
         if($emailCheck['id'] != $request['id']){
-    
-            return response()->json('The email has already been taken.', 422);
+            $error['errors']['email'][] = 'The email has already been taken.';
+            return response()->json($error, 422);
     
         }
 
@@ -361,7 +361,7 @@ public function updateUser(Request $request){
 
     }catch(exception $e){
 
-        return response()->json('error', 500);
+        return $e;
 
     }
 
