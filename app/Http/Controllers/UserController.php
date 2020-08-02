@@ -12,6 +12,11 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendLink;
 use App\Mail\SendUpdate;
+use App\Mail\SendResetLink;
+use App\Mail\SendSuspend;
+
+
+
 
 class UserController extends Controller
 {
@@ -459,9 +464,86 @@ public function updateUser(Request $request){
 
 }
 
+public function userResetSuspend(Request $request){
+
+    $request -> validate([
+
+        'id' => 'required',
+        'action' => 'required'
+
+    ]);
+
+    foreach($request as $item){
+
+        $item = filter_var($item, FILTER_SANITIZE_STRING);
+
+    }
+
+    $users = new User();
+
+    $user = Auth::user(); 
+
+    try {
+
+        $result = $users::where('id', $request['id']) -> firstOrFail();
+        
+        if(isset($result)){
+
+            if($request['action'] == 'reset'){
+
+                $Carbon = new Carbon();
+
+                $dateTimeStamp = $Carbon::now()->toDateTimeString();
+
+                $registrationHash = bcrypt($request['email'].$dateTimeStamp);
+
+                $result -> registration_hash = $registrationHash;  
+                
+                $result['password'] = null;
+
+                $result -> last_edited_by = $user-> id;
+
+                $result -> update();
+
+                //Replace with the actual HOSPITAL langiage once hospital table is ready.
+                $language = 'ENG';
+
+                $this -> sendResetEmail($result['email'], $registrationHash, $language);
+
+                return response()->json('success', 200);
+
+
+            }elseif($request['action'] == 'suspend'){
+
+                $result->active = 0;
+
+                $result -> last_edited_by = $user-> id;
+
+                $result->update(); 
+
+                $this -> sendSuspendEmail($result['email'], $user);
+
+                return response()->json('success', 200);
+
+            }
+
+
+
+        }    
+       
+    } catch (exception $e) {
+
+        return response()->json('error', 500);
+
+    }
+
+
+
+}
+
+
 
 public function sendRegistrationEmail($user, $email, $language, $link){
-
     
     Mail::to($email)->send(new SendLink($link, $user, $language));
 
@@ -470,6 +552,18 @@ public function sendRegistrationEmail($user, $email, $language, $link){
 public function sendUpdateEmail($users, $user, $email){
 
     Mail::to($email)->send(new SendUpdate($users, $user));
+
+}
+
+public function sendResetEmail($email, $registrationHash, $language){
+
+    Mail::to($email)->send(new SendResetLink($registrationHash, $language));
+
+}
+
+public function sendSuspendEmail($email, $user){
+
+    Mail::to($email)->send(new SendSuspend($user));
 
 }
 

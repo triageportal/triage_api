@@ -50,3 +50,6 @@ Route::get('/user','UserController@userSearch');
 
 //Update the user profile. Must be accesses by Admin, Superuser or Manager.
 Route::patch('/user', 'UserController@updateUser');
+
+//Reset user password or suspend user. Depends on "action" attribute. Must be accesses by Admin, Superuser or Manager.
+Route::put('/user', 'UserController@userResetSuspend');
