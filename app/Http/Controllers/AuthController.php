@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\User;
 use Tymon\JWTAuth\JWTAuth;
-use Carbon\Carbon;
+
 
 class AuthController extends Controller
 {
