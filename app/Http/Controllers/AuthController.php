@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\User;
 use Tymon\JWTAuth\JWTAuth;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -26,12 +27,23 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
+            
         $credentials = request(['email', 'password']);
 
+        $userTime = $request['currentTime'];
+
+        $midnightTime = '23:59:59';
+
+        $minutediff = ceil(round((strtotime($midnightTime) - strtotime($userTime))/60, 2));
+
+        Auth::factory()->setTTL($minutediff);        
+
         if (! $token = Auth::attempt($credentials)) {
+
             return response()->json(['error' => 'Unauthorized'], 401);
+            
         }
 
         //Finds the user that corresponds to the latest created token.
