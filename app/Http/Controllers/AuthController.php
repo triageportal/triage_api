@@ -37,13 +37,21 @@ class AuthController extends Controller
         //Finds the user that corresponds to the latest created token.
         $user = Auth::user();
 
-        if($user['active'] == 1){
+        if($user['status'] == 'active'){
 
             return $this->respondWithToken($token);
 
+        }elseif($user['status'] == 'suspended'){
+
+            return response()->json(['error' => 'suspended'], 401);
+
+        }elseif($user['status'] == 'inactive'){
+
+            return response()->json(['error' => 'inactive'], 401);
+
         }else{
 
-            return response()->json('suspended', 401);
+            return response()->json(['error' => 'Unauthorized'], 401); 
 
         }
        

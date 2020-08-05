@@ -62,7 +62,7 @@ class UserController extends Controller
                     $users -> access_type = $access_type;               
                     $users -> hospital_id = $user -> hospital_id;
                     $users -> registration_hash = $registrationHash;
-                    $users -> active = 0;
+                    $users -> status = 'inactive';
                     $users -> created_by = $user-> id;
     
                     $users -> save();
@@ -112,7 +112,7 @@ class UserController extends Controller
                     $users -> position = "admin";
                     $users -> access_type = "admin";               
                     $users -> hospital_id = 0;
-                    $users -> active = 1;
+                    $users -> status = 'active';
                     $users -> registration_hash = NULL;
                     $users -> created_by = NULL;
     
@@ -172,7 +172,7 @@ public function completeRegistration(Request $request){
 
             $result -> password = $password;
 
-            $result -> active = 1;
+            $result -> status = 'active';
 
             $result -> registration_hash = null;
 
@@ -501,6 +501,8 @@ public function userResetSuspend(Request $request){
                 
                 $result['password'] = null;
 
+                $result->status = 'inactive';
+
                 $result -> last_edited_by = $user-> id;
 
                 $result -> update();
@@ -515,7 +517,7 @@ public function userResetSuspend(Request $request){
 
             }elseif($request['action'] == 'suspend'){
 
-                $result->active = 0;
+                $result->status = 'suspended';
 
                 $result -> last_edited_by = $user-> id;
 
@@ -540,6 +542,92 @@ public function userResetSuspend(Request $request){
 
 
 }
+
+
+public function userDelete(Request $request){
+
+    $request -> validate([
+
+        'id' => 'required'
+
+    ]);
+
+    foreach($request as $item){
+
+        $item = filter_var($item, FILTER_SANITIZE_STRING);
+
+    }
+
+    $users = new User();
+
+    $user = Auth::user(); 
+
+    $result = [];
+
+    try {
+
+       $result = $users::where('id', $request['id']) -> firstOrFail();
+
+
+       if($result['id'] != $user['id']){
+
+            if($user['access_type'] == 'admin'){
+                
+               $response = $this -> deleteUserCont($result, $user);
+
+               return $response;
+
+            }elseif($user['access_type'] =='superuser'){
+
+                if($result['access_type'] != 'admin' && $result['access_type'] != 'superuser'){
+
+                    $response = $this -> deleteUserCont($result, $user); 
+                    
+                    return $response;
+
+                }
+
+            }elseif($user['access_type'] =='manager'){
+
+                if($result['access_type'] != 'admin' && $result['access_type'] != 'superuser' && $result['access_type'] != 'manager'){
+
+                    $response = $this -> deleteUserCont($result, $user);  
+
+                    return $response;
+
+                }
+
+            }  
+
+       }
+
+
+    } catch (exception $e) {
+
+        return response()->json('error', 500);
+
+    }
+
+
+
+
+}
+
+
+
+public function deleteUserCont($result, $user){
+
+    
+    $result -> status = 'deleted';
+        
+    $result -> last_edited_by = $user-> id;
+
+    $result -> save();
+
+    return response()->json('success', 200);
+
+}
+
 
 
 

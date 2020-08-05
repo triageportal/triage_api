@@ -53,3 +53,6 @@ Route::patch('/user', 'UserController@updateUser');
 
 //Reset user password or suspend user. Depends on "action" attribute. Must be accesses by Admin, Superuser or Manager.
 Route::put('/user', 'UserController@userResetSuspend');
+
+//Delete user, sets the user status to 'deleted'.
+Route::delete('/user','UserController@userDelete');

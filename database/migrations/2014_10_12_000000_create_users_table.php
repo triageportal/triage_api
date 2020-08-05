@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('access_type', 50);
             $table->string('registration_hash', 255)->nullable();
             $table->integer('hospital_id');
-            $table->integer('active');           
+            $table->String('status', 50);           
             $table->string('password', 255)->nullable();
             $table->timestamps();
             
