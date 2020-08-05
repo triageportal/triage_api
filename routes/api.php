@@ -36,14 +36,14 @@ Route::group([
 //Disable the rounte after creating the first user.
 Route::post('/createadmin', 'UserController@createAdmin');
 
-//Creates - Pre registers a new user. Must be accesses by Admin, Superuser or Manager.
-Route::post('/user', 'UserController@preRegister');
-
 //Validates the hash before password update for the new user.
 Route::post('/validate-registration', 'UserController@validateRegistration');
 
 //Competes the registration for the new user.
 Route::post('/complete-registration','UserController@completeRegistration');
+
+//Creates - Pre registers a new user. Must be accesses by Admin, Superuser or Manager.
+Route::post('/user', 'UserController@preRegister');
 
 //Search for user info. Must be accesses by Admin, Superuser or Manager.
 Route::get('/user','UserController@userSearch');
