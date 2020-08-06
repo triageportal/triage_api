@@ -42,6 +42,7 @@ Route::post('/validate-registration', 'UserController@validateRegistration');
 //Competes the registration for the new user.
 Route::post('/complete-registration','UserController@completeRegistration');
 
+//USER APIs.
 //Creates - Pre registers a new user. Must be accesses by Admin, Superuser or Manager.
 Route::post('/user', 'UserController@preRegister');
 
@@ -56,3 +57,8 @@ Route::put('/user', 'UserController@userResetSuspend');
 
 //Delete user, sets the user status to 'deleted'.
 Route::delete('/user','UserController@userDelete');
+
+
+//CLINIC APIs.
+//Creates a new clinic. Requires SUPERUSER info as well, auto registers the superuser in USER table.
+Route::post('/clinic','ClinicController@registerClinic');

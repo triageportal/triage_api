@@ -60,7 +60,7 @@ class UserController extends Controller
                     $users -> password = NULL;              
                     $users -> position = $postion; 
                     $users -> access_type = $access_type;               
-                    $users -> hospital_id = $user -> hospital_id;
+                    $users -> clinic_id = $user -> clinic_id;
                     $users -> registration_hash = $registrationHash;
                     $users -> status = 'inactive';
                     $users -> created_by = $user-> id;
@@ -111,7 +111,7 @@ class UserController extends Controller
                     $users -> password = bcrypt($password);             
                     $users -> position = "admin";
                     $users -> access_type = "admin";               
-                    $users -> hospital_id = 0;
+                    $users -> clinic_id = 0;
                     $users -> status = 'active';
                     $users -> registration_hash = NULL;
                     $users -> created_by = NULL;
@@ -212,7 +212,8 @@ public function userSearch(Request $request){
 
                 $searchKeyword = $request['keyword'];
 
-                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') -> orWhere('last_name', 'like', '%' . $searchKeyword . '%') -> get();        
+                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') -> orWhere('last_name', 'like', '%' . $searchKeyword . '%') -> 
+                where('status', '!=', 'deleted') -> get();        
                  
                 foreach($result as $item){
 
@@ -245,10 +246,11 @@ public function userSearch(Request $request){
 
                 $searchKeyword = $request['keyword'];
 
-                $hospitalId = $user -> hospital_id;
+                $hospitalId = $user -> clinic_id;
 
                 $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') ->orWhere('last_name', 'like', '%' . $searchKeyword . '%') 
-                -> where('hospital_id', $hospitalId) ->where('access_type', '!=', 'admin') ->where('access_type', '!=', 'superuser') -> get();        
+                -> where('clinic_id', $hospitalId) ->where('access_type', '!=', 'admin') ->where('access_type', '!=', 'superuser') -> where('status', '!=', 'deleted') -> 
+                get();        
                  
                 foreach($result as $item){
 
@@ -280,10 +282,10 @@ public function userSearch(Request $request){
 
                 $searchKeyword = $request['keyword'];
 
-                $hospitalId = $user -> hospital_id;
+                $hospitalId = $user -> clinic_id;
 
                 $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') ->orWhere('last_name', 'like', '%' . $searchKeyword . '%') 
-                -> where('hospital_id', $hospitalId) ->where('access_type', '!=', 'admin') -> get();        
+                -> where('clinic_id', $hospitalId) ->where('access_type', '!=', 'admin') -> where('status', '!=', 'deleted') -> get();        
                  
                 foreach($result as $item){
 
@@ -333,11 +335,7 @@ public function updateUser(Request $request){
         'position' => 'required'             
     ]);
 
-    foreach($request as $item){
-
-        $item = filter_var($item, FILTER_SANITIZE_STRING);
-
-    }
+    $request = $this->sanitize($request->all());
 
     $users = new User();   
 
@@ -435,7 +433,7 @@ public function updateUser(Request $request){
                     $result -> email = $request['email'];                           
                     $result -> position = $request['position']; 
                     $result -> access_type = $request['access_type'];               
-                    $result -> hospital_id = $user -> hospital_id;
+                    $result -> clinic_id = $user -> clinic_id;
                     $result -> registration_hash = $registrationHash;                
                     $result -> last_edited_by = $user-> id;
 
@@ -473,11 +471,7 @@ public function userResetSuspend(Request $request){
 
     ]);
 
-    foreach($request as $item){
-
-        $item = filter_var($item, FILTER_SANITIZE_STRING);
-
-    }
+    $request = $this->sanitize($request->all());
 
     $users = new User();
 
@@ -552,11 +546,7 @@ public function userDelete(Request $request){
 
     ]);
 
-    foreach($request as $item){
-
-        $item = filter_var($item, FILTER_SANITIZE_STRING);
-
-    }
+    $request = $this->sanitize($request->all());
 
     $users = new User();
 
@@ -619,6 +609,10 @@ public function deleteUserCont($result, $user){
 
     
     $result -> status = 'deleted';
+
+    $delEmail = $result -> email."(del)";
+
+    $result -> email = $delEmail;
         
     $result -> last_edited_by = $user-> id;
 
@@ -626,6 +620,42 @@ public function deleteUserCont($result, $user){
 
     return response()->json('success', 200);
 
+}
+
+
+public function addSuperUserForClinic($newClinic, $request, $user){
+
+       
+    try {
+        $users = new User();
+        $Carbon = new Carbon();   
+            
+
+        $dateTimeStamp = $Carbon::now()->toDateTimeString();
+        $registrationHash = bcrypt($request['email'].$dateTimeStamp);
+
+
+        $users -> first_name = $request['first_name'];
+        $users -> last_name = $request['last_name'];
+        $users -> email = $request['email'];   
+        $users -> password = NULL;              
+        $users -> position = $request['position']; 
+        $users -> access_type = 'superuser';               
+        $users -> clinic_id = $newClinic['id'];
+        $users -> registration_hash = $registrationHash;
+        $users -> status = 'inactive';
+        $users -> created_by = $user-> id;
+
+        $users -> save();
+
+        $language = $newClinic['language'];
+        
+        $this -> sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
+
+    } catch (exception $e) {
+        return $e;
+    }       
+  
 }
 
 
@@ -655,6 +685,19 @@ public function sendSuspendEmail($email, $user){
 
 }
 
+public function sanitize($request){
+        
+    $keys = array_keys($request);
+   
+    for($x = 0; $x < sizeof($request); $x++ ) {
+
+       $request[$keys[$x]] = filter_var($request[$keys[$x]], FILTER_SANITIZE_STRING);
+
+    }
+
+    return $request;
+
+}
 
 
 }
