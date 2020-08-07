@@ -623,6 +623,7 @@ public function deleteUserCont($result, $user){
 }
 
 
+//This function is used to auto - create superuser for the newly created clinic.
 public function addSuperUserForClinic($newClinic, $request, $user){
 
        

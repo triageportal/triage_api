@@ -17,7 +17,7 @@ class ClinicController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['createAdmin', 'validateRegistration', 'completeRegistration']]);
+        $this->middleware('auth:api', ['except' => []]);
     }
 
     public function registerClinic(Request $request){
@@ -64,7 +64,7 @@ class ClinicController extends Controller
 
       } catch (exception $e) {
 
-        return response()->json('error', 500);
+        return response()->json($e, 500);
 
       }
 
