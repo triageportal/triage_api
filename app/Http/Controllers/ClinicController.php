@@ -11,16 +11,27 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\SendLink;
 use Exception;
 use App\Http\Controllers\UserController;
+use App\Http\Helper\HelperClass;
 
 class ClinicController extends Controller
 {
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => []]);
+        $this->middleware(['auth:api'], ['except' => []]);       
+        
     }
 
     public function registerClinic(Request $request){
+
+        
+    // $adminCheck = Auth::user();  
+
+    // if($adminCheck['access_type'] != 'admin'){
+
+    //     return response()->json('admin access denied', 401);        
+
+    // }
 
       
         $request->validate([
@@ -45,8 +56,8 @@ class ClinicController extends Controller
 
       try {
 
-        $request = $this->sanitize($request->all());
-        
+        $help = new HelperClass;  
+        $help -> sanitize($request->all());
        
 
         $user = Auth::user();  
@@ -121,18 +132,22 @@ class ClinicController extends Controller
     }
     
 
-    public function sanitize($request){
-        
-        $keys = array_keys($request);
-       
-        for($x = 0; $x < sizeof($request); $x++ ) {
+public function clinicSearch(Request $request){
 
-           $request[$keys[$x]] = filter_var($request[$keys[$x]], FILTER_SANITIZE_STRING);
+    $help = new HelperClass;  
+    $help -> sanitize($request->all());
 
-        }
+    $request -> validate([
 
-        return $request;
+        'keyword'=>"required"
 
-    }
+    ]);
+
+
+    return $request['keyword'];
+
+}
+
+
 
 }

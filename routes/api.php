@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\CheckAdmin;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +61,15 @@ Route::put('/user', 'UserController@userResetSuspend');
 Route::delete('/user','UserController@userDelete');
 
 
+
 //CLINIC APIs.
-//Creates a new clinic. Requires SUPERUSER info as well, auto registers the superuser in USER table.
-Route::post('/clinic','ClinicController@registerClinic');
+Route::middleware('auth:api','isadmin')->group(
+
+function () {
+
+    //Creates a new clinic. Requires SUPERUSER info as well, auto registers the superuser in USER table.
+    Route::post('/clinic','ClinicController@registerClinic');
+    //Used to pull the list of clinics by the Admin.
+    Route::get('/clinic','ClinicController@clinicSearch');
+
+});

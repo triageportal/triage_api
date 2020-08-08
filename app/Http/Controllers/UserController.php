@@ -14,6 +14,7 @@ use App\Mail\SendLink;
 use App\Mail\SendUpdate;
 use App\Mail\SendResetLink;
 use App\Mail\SendSuspend;
+use App\Http\Helper\HelperClass;
 
 
 
@@ -327,7 +328,7 @@ public function userSearch(Request $request){
 public function updateUser(Request $request){
 
     $request->validate([
-        'id' => 'required',
+        'id' => 'required|integer',
         'first_name' => 'required|max:50',
         'last_name' => 'required|max:50',
         'email' => 'required|email|max:50',            
@@ -335,7 +336,8 @@ public function updateUser(Request $request){
         'position' => 'required'             
     ]);
 
-    $request = $this->sanitize($request->all());
+    $help = new HelperClass;  
+    $help -> sanitize($request->all());
 
     $users = new User();   
 
@@ -466,12 +468,13 @@ public function userResetSuspend(Request $request){
 
     $request -> validate([
 
-        'id' => 'required',
+        'id' => 'required|integer',
         'action' => 'required'
 
     ]);
 
-    $request = $this->sanitize($request->all());
+    $help = new HelperClass;  
+    $help -> sanitize($request->all());
 
     $users = new User();
 
@@ -542,11 +545,12 @@ public function userDelete(Request $request){
 
     $request -> validate([
 
-        'id' => 'required'
+        'id' => 'required|integer'
 
     ]);
 
-    $request = $this->sanitize($request->all());
+    $help = new HelperClass;  
+    $help -> sanitize($request->all());
 
     $users = new User();
 
@@ -685,20 +689,5 @@ public function sendSuspendEmail($email, $user){
     Mail::to($email)->send(new SendSuspend($user));
 
 }
-
-public function sanitize($request){
-        
-    $keys = array_keys($request);
-   
-    for($x = 0; $x < sizeof($request); $x++ ) {
-
-       $request[$keys[$x]] = filter_var($request[$keys[$x]], FILTER_SANITIZE_STRING);
-
-    }
-
-    return $request;
-
-}
-
 
 }

@@ -47,6 +47,13 @@ class AuthController extends Controller
 
         $minutediff = ceil(round((strtotime($midnightTime) - strtotime($userTime))/60, 2));
 
+        //If user local time is 30 mins or less to midnight, we grant 60 minutes.
+        if($minutediff<=30){
+
+            $minutediff = 60;
+
+        }
+
         Auth::factory()->setTTL($minutediff);        
 
         if (! $token = Auth::attempt($credentials)) {
