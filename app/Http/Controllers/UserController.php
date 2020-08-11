@@ -42,13 +42,18 @@ class UserController extends Controller
             ]);
 
             $help = new HelperClass;  
-            $request = $help -> sanitize($request->all());    
-                 
+            $request = $help -> sanitize($request->all());
+            
+            $user = JWTAuth::parseToken()->toUser();
+            
+            if($user['access_type'] == 'admin' && $user['clinic_id'] == 0){
+
+                return response()->json("clinic must be assigned first", 500);
+
+            }
     
             $dateTimeStamp = $Carbon::now()->toDateTimeString();
-            $registrationHash = bcrypt($request['email'].$dateTimeStamp);
-
-            $user = JWTAuth::parseToken()->toUser();
+            $registrationHash = bcrypt($request['email'].$dateTimeStamp);            
 
             $users -> first_name = $request['first_name'];
             $users -> last_name = $request['last_name'];

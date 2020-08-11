@@ -73,3 +73,5 @@ function () {
     Route::get('/clinic','ClinicController@clinicSearch');
 
 });
+
+Route::middleware('auth:api','isadmin')->patch('/assign','ClinicController@assignClinic');

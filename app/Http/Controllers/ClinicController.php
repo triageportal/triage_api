@@ -125,20 +125,76 @@ public function clinicSearch(Request $request){
 
     $request -> validate([
 
-        'keyword'=>"required"
+        'keyword'=>"required|min:3"
 
     ]);
 
     $help = new HelperClass;  
     $request = $help -> sanitize($request->all());
 
-  
+    $clinics = new Clinic(); 
+    
+    try {
+        if($request['keyword'] == '%all%'){
 
+            $clinicsResult = $clinics::all();
+            
+            return response()->json($clinicsResult, 200);
+    
+        }else{
+    
+            $clinicsResult = $clinics::where('name', 'like', '%' . $request['keyword'] . '%')->get();
+    
+            return response()->json($clinicsResult, 200);  
+    
+        }
+    } catch (exception $e) {
 
-    return $request;
+        return response()->json("error", 500);  
 
+    }
 }
 
+public function assignClinic(Request $request){
+
+    $request -> validate([
+
+        "id" => "required|integer"
+
+    ]);
+
+    $help = new HelperClass;  
+    $request = $help -> sanitize($request->all());
+
+    $user = Auth::user();
+    $clinics = new Clinic();
+    $updateUser = new User();
+
+    try {
+        
+        $clinicsResult = $clinics::where('id', $request['id'])->firstOrFail();
+
+        $userId = $user['id'];
+
+        $updateResult = $updateUser::where('id', $userId)->firstOrFail();
+
+        $updateResult['clinic_id'] = $clinicsResult['id'];
+
+        $updateResult['last_edited_by'] =  $userId;
+
+        $updateResult -> update();
+
+        return response()->json("success", 200);
+
+    } catch (exception $e) {
+
+         return response()->json("error", 500);
+         
+    }
+
+
+    
+}
 
 
 }
