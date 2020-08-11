@@ -627,20 +627,22 @@ public function deleteUserCont($result, $user){
 
         return response()->json('user already deleted', 500);
 
-    }
+    }else{
 
+        $result -> status = 'deleted';
+
+        $delEmail = $result -> email."(del)";
     
-    $result -> status = 'deleted';
+        $result -> email = $delEmail;
+            
+        $result -> last_edited_by = $user-> id;
+    
+        $result -> save();
+    
+        return response()->json('success', 200);
 
-    $delEmail = $result -> email."(del)";
+    }   
 
-    $result -> email = $delEmail;
-        
-    $result -> last_edited_by = $user-> id;
-
-    $result -> save();
-
-    return response()->json('success', 200);
 
 }
 
