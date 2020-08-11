@@ -75,4 +75,4 @@ function () {
 });
 
 //Assign clinic_id to the ADMIN user.
-Route::middleware('auth:api','isadmin')->patch('/assign','ClinicController@assignClinic');
+Route::middleware('auth:api','isadmin')->patch('/assign-clinic','ClinicController@assignClinic');
