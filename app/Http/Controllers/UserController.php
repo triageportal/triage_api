@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Clinic;
 use Carbon\Carbon;
 use Exception;
 use Tymon\JWTAuth\Facades\JWTAuth; 
@@ -28,11 +29,8 @@ class UserController extends Controller
 
     public function preRegister(Request $request){
 
-        
-
             $users = new User();
-            $Carbon = new Carbon();
-    
+            $Carbon = new Carbon();    
            
             $request->validate([
                 'first_name' => 'required|max:50',
@@ -42,39 +40,40 @@ class UserController extends Controller
                 'position' => 'required'          
                
             ]);
-    
-            $firstName = filter_var($request['first_name'], FILTER_SANITIZE_STRING);
-            $lastName = filter_var($request['last_name'], FILTER_SANITIZE_STRING);
-            $email = filter_var($request['email'], FILTER_SANITIZE_STRING);
-            $access_type = filter_var($request['access_type'], FILTER_SANITIZE_STRING);
-            $postion = filter_var($request['position'], FILTER_SANITIZE_STRING);
-                  
-    
-                $dateTimeStamp = $Carbon::now()->toDateTimeString();
-                $registrationHash = bcrypt($request['email'].$dateTimeStamp);
-    
-                $user = JWTAuth::parseToken()->toUser();
-    
-                    $users -> first_name = $firstName;
-                    $users -> last_name = $lastName;
-                    $users -> email = $email;   
-                    $users -> password = NULL;              
-                    $users -> position = $postion; 
-                    $users -> access_type = $access_type;               
-                    $users -> clinic_id = $user -> clinic_id;
-                    $users -> registration_hash = $registrationHash;
-                    $users -> status = 'inactive';
-                    $users -> created_by = $user-> id;
-    
-                    $users -> save();
 
-                     //Replace with the actual HOSPITAL langiage once hospital table is ready.
-                    $language = 'ENG';
-                    
-                    $this -> sendRegistrationEmail($user, $email, $language, $registrationHash);
-                    
+            $help = new HelperClass;  
+            $request = $help -> sanitize($request->all());    
+                 
     
-                    return response()->json('success', 200);
+            $dateTimeStamp = $Carbon::now()->toDateTimeString();
+            $registrationHash = bcrypt($request['email'].$dateTimeStamp);
+
+            $user = JWTAuth::parseToken()->toUser();
+
+            $users -> first_name = $request['first_name'];
+            $users -> last_name = $request['last_name'];
+            $users -> email = $request['email'];   
+            $users -> password = NULL;              
+            $users -> position = $request['position']; 
+            $users -> access_type = $request['access_type'];               
+            $users -> clinic_id = $user -> clinic_id;
+            $users -> registration_hash = $registrationHash;
+            $users -> status = 'inactive';
+            $users -> created_by = $user-> id;
+
+            $users -> save();
+
+            //Pulling assigned clinic's language.
+            $clinic = new Clinic;
+
+            $resultClinic = $clinic::where('id', $user['clinic_id'])->first();
+
+            $language = $resultClinic['language'];
+            
+            $this -> sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
+            
+
+            return response()->json('success', 200);
        
 
     }
@@ -84,47 +83,31 @@ class UserController extends Controller
 
         $users = new User();
 
+        $request->validate([
+            'firstName' => 'required|max:50',
+            'lastName' => 'required|max:50',
+            'email' => 'required|unique:users|email|max:50',
+            'password' => "required|regex: /^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:32|min:8"                 
+                
+        ]);
 
-       
+        $help = new HelperClass;  
+        $request = $help -> sanitize($request->all());   
 
-            $request->validate([
-                'firstName' => 'required|max:50',
-                'lastName' => 'required|max:50',
-                'email' => 'required|unique:users|email|max:50',
-                'password' => "required|regex: /^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:32|min:8"                 
-                   
-            ]);
+        $users -> first_name = $request['firstName'];
+        $users -> last_name = $request['lastName'];
+        $users -> email = $request['email'];             
+        $users -> password = bcrypt($request['password']);             
+        $users -> position = "admin";
+        $users -> access_type = "admin";               
+        $users -> clinic_id = 0;
+        $users -> status = 'active';
+        $users -> registration_hash = NULL;
+        $users -> created_by = NULL;
 
+        $users -> save();
 
-        
-                $firstName = filter_var($request['firstName'], FILTER_SANITIZE_STRING);
-                $lastName = filter_var($request['lastName'], FILTER_SANITIZE_STRING);
-                $email = filter_var($request['email'], FILTER_SANITIZE_STRING);
-                $password = filter_var($request['password'], FILTER_SANITIZE_STRING);
-
-
-                  
-    
-    
-                    $users -> first_name = $firstName;
-                    $users -> last_name = $lastName;
-                    $users -> email = $email;             
-                    $users -> password = bcrypt($password);             
-                    $users -> position = "admin";
-                    $users -> access_type = "admin";               
-                    $users -> clinic_id = 0;
-                    $users -> status = 'active';
-                    $users -> registration_hash = NULL;
-                    $users -> created_by = NULL;
-    
-                    $users -> save();
-    
-                    return response()->json('success', 200);
-
-       
-       
-
-
+        return response()->json('success', 200);
     }
 
 
@@ -135,6 +118,9 @@ public function validateRegistration(Request $request){
         $request-> validate([
             'registrationHash' => 'required'
         ]);
+
+        $help = new HelperClass;  
+        $request = $help -> sanitize($request->all());  
 
         $registrationHash =  $request['registrationHash'];
        
@@ -161,6 +147,9 @@ public function completeRegistration(Request $request){
         'registrationHash' => 'required',
         'password' => "required|regex: /^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:32|min:8"  
     ]);
+
+    $help = new HelperClass;  
+    $request = $help -> sanitize($request->all());  
 
     $registrationHash = $request['registrationHash'];
     $password = bcrypt($request['password']);
@@ -204,6 +193,9 @@ public function userSearch(Request $request){
 
         "keyword" => 'required|min:3'
     ]);
+
+    $help = new HelperClass;  
+    $request = $help -> sanitize($request->all());  
 
 
         if($user->access_type != 'regular'){
@@ -337,7 +329,7 @@ public function updateUser(Request $request){
     ]);
 
     $help = new HelperClass;  
-    $help -> sanitize($request->all());
+    $request = $help -> sanitize($request->all());  
 
     $users = new User();   
 
@@ -441,9 +433,13 @@ public function updateUser(Request $request){
 
                     $result -> update();
 
-                    //Replace with the actual HOSPITAL langiage once hospital table is ready.
-                    $language = 'ENG';
-                    
+                    //Pulling assigned clinic's language.
+                    $clinic = new Clinic;
+
+                    $resultClinic = $clinic::where('id', $user['clinic_id'])->first();
+
+                    $language = $resultClinic['language'];
+
                     $this -> sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
                     
 
@@ -474,7 +470,7 @@ public function userResetSuspend(Request $request){
     ]);
 
     $help = new HelperClass;  
-    $help -> sanitize($request->all());
+    $request = $help -> sanitize($request->all());  
 
     $users = new User();
 
@@ -492,7 +488,7 @@ public function userResetSuspend(Request $request){
 
                 $dateTimeStamp = $Carbon::now()->toDateTimeString();
 
-                $registrationHash = bcrypt($request['email'].$dateTimeStamp);
+                $registrationHash = bcrypt($result['email'].$dateTimeStamp);
 
                 $result -> registration_hash = $registrationHash;  
                 
@@ -504,8 +500,12 @@ public function userResetSuspend(Request $request){
 
                 $result -> update();
 
-                //Replace with the actual HOSPITAL langiage once hospital table is ready.
-                $language = 'ENG';
+                //Pulling assigned clinic's language.
+                $clinic = new Clinic;
+
+                $resultClinic = $clinic::where('id', $user['clinic_id'])->first();
+
+                $language = $resultClinic['language'];
 
                 $this -> sendResetEmail($result['email'], $registrationHash, $language);
 
@@ -550,7 +550,7 @@ public function userDelete(Request $request){
     ]);
 
     $help = new HelperClass;  
-    $help -> sanitize($request->all());
+    $request = $help -> sanitize($request->all());  
 
     $users = new User();
 
@@ -561,10 +561,9 @@ public function userDelete(Request $request){
     try {
 
        $result = $users::where('id', $request['id']) -> firstOrFail();
-
-
+       
        if($result['id'] != $user['id']){
-
+       
             if($user['access_type'] == 'admin'){
                 
                $response = $this -> deleteUserCont($result, $user);
@@ -579,6 +578,10 @@ public function userDelete(Request $request){
                     
                     return $response;
 
+                }else{
+
+                    return response()->json('unable to delete', 500);
+
                 }
 
             }elseif($user['access_type'] =='manager'){
@@ -589,11 +592,20 @@ public function userDelete(Request $request){
 
                     return $response;
 
+                }else{
+
+                    return response()->json('unable to delete', 500);
+
                 }
 
             }  
 
-       }
+       }else{
+
+        return response()->json('unable to delete', 500);
+
+        }
+       
 
 
     } catch (exception $e) {
@@ -610,6 +622,12 @@ public function userDelete(Request $request){
 
 
 public function deleteUserCont($result, $user){
+
+    if(strpos($result['email'], '(del)')){
+
+        return response()->json('user already deleted', 500);
+
+    }
 
     
     $result -> status = 'deleted';

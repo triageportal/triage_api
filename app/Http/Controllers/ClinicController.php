@@ -22,16 +22,7 @@ class ClinicController extends Controller
         
     }
 
-    public function registerClinic(Request $request){
-
-        
-    // $adminCheck = Auth::user();  
-
-    // if($adminCheck['access_type'] != 'admin'){
-
-    //     return response()->json('admin access denied', 401);        
-
-    // }
+    public function registerClinic(Request $request){ 
 
       
         $request->validate([
@@ -57,14 +48,12 @@ class ClinicController extends Controller
       try {
 
         $help = new HelperClass;  
-        $help -> sanitize($request->all());
+        $request =$help -> sanitize($request->all());
        
 
         $user = Auth::user();  
         $clinics = new Clinic();
-        $users = new UserController();
-
-        
+        $users = new UserController();        
 
         $newClinic = $this->saveClinic($user, $clinics, $request);
 
@@ -134,17 +123,19 @@ class ClinicController extends Controller
 
 public function clinicSearch(Request $request){
 
-    $help = new HelperClass;  
-    $help -> sanitize($request->all());
-
     $request -> validate([
 
         'keyword'=>"required"
 
     ]);
 
+    $help = new HelperClass;  
+    $request = $help -> sanitize($request->all());
 
-    return $request['keyword'];
+  
+
+
+    return $request;
 
 }
 
