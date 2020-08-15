@@ -196,5 +196,99 @@ public function assignClinic(Request $request){
     
 }
 
+public function clinicUpdate(Request $request){
+
+    $request->validate([
+        
+        'id' => 'required|integer',
+        'name' => 'required|max:100',
+        'addressLineOne'=>'required|max:255',
+        'city'=>'required|max:50',
+        'zipCode'=>'required|max:15',
+        'stateOrRegion'=>'required|max:50',
+        'country'=>'required|max:50',
+        'phone'=>'required|max:50',
+        'clinicEmail'=>'required|email|max:50',
+        'website'=>'required|max:255',
+        'language'=>'required|max:50',  
+        'contactPhone'=>'required|max:50',
+        'contactName' => 'required|max:100',        
+        'contactEmail' => 'required|email|max:50' 
+
+    ]);  
+
+    $help = new HelperClass;  
+    $request =$help -> sanitize($request->all());
+   
+    $user = Auth::user();  
+    $clinics = new Clinic();
+   
+
+    $clinicEmailCheck = $clinics::where('clinicEmail', $request['clinicEmail'])->first();
+
+    if(isset($clinicEmailCheck)){
+
+        if($clinicEmailCheck['clinicEmail'] == $request['clinicEmail']){
+
+            return response()->json("This clinic email has been taken.", 500);
+
+        }
+
+    }
+
+    $contactEmailCheck = $clinics::where('contactEmail', $request['contactEmail'])->first();
+
+    if(isset($contactEmailCheck)){
+
+        if($contactEmailCheck['contactEmail'] == $request['contactEmail']){
+
+            return response()->json("This contact email has been taken.", 500);
+
+        }
+
+    }
+
+    $clinicResult = $clinics::where('id', $request['id'])->first();
+
+    if(isset($clinicResult)){
+
+        $clinicResult->name = $request['name']; 
+        $clinicResult->addressLineOne = $request['addressLineOne'];
+
+        if(isset($request['addressLineTwo'])){
+
+            $clinicResult->addressLineTwo = $request['addressLineTwo'];
+
+        }else{
+
+            $clinicResult->addressLineTwo = null;
+
+        }        
+        
+        $clinicResult->city = $request['city'];
+        $clinicResult->zipCode = $request['zipCode'];
+        $clinicResult->stateOrRegion = $request['stateOrRegion'];
+        $clinicResult->country = $request['country'];
+        $clinicResult->phone = $request['phone'];
+        $clinicResult->clinicEmail = $request['clinicEmail'];
+        $clinicResult->website = $request['website'];
+        $clinicResult->language = $request['language'];
+        $clinicResult->contactPhone = $request['contactPhone'];
+        $clinicResult->contactName = $request['contactName'];
+        $clinicResult->contactEmail = $request['contactEmail'];
+        $clinicResult->edited_by = $user['id'];
+
+        $clinicResult->update();
+
+        return response()->json("success", 200);
+
+    }else{
+
+        return response()->json("No such clinic found.", 500); 
+
+    }
+    
+}
+
 
 }

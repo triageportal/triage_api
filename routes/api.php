@@ -71,6 +71,8 @@ function () {
     Route::post('/clinic','ClinicController@registerClinic');
     //Used to pull the list of clinics by the Admin.
     Route::get('/clinic','ClinicController@clinicSearch');
+    //Used to update clinic information.
+    Route::patch('/clinic', 'ClinicController@clinicUpdate');
 
 });
 
