@@ -139,25 +139,40 @@ public function clinicSearch(Request $request){
 
             $clinicsResult = $clinics::all();
 
+            //Replacing created_by id with the user name.
+            //Replacing updated_by id with the user name.
             foreach($clinicsResult as $item){
 
-                $users = new User();
+                if( $item['created_by'] != null){
 
-                $usersResult = $users::where('id',  $item['created_by'])->first();
+                    $users = new User();
 
-                $item['created_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+                    $usersResult = $users::where('id',  $item['created_by'])->first();
+    
+                    $item['created_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+
+                }else{
+
+                    $item['created_by'] = 'Not available';
+
+                }
+
+                if($item['edited_by'] != null){
+
+                    $users = new User();
+
+                    $usersResult = $users::where('id',  $item['edited_by'])->first();
+                    
+                    $item['edited_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+
+                }else{
+
+                    $item['edited_by'] = 'Not available';
+
+                }
 
             } 
-
-            foreach($clinicsResult as $item){
-
-                $users = new User();
-
-                $usersResult = $users::where('id',  $item['edited_by'])->first();
-
-                $item['edited_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
-
-            } 
+ 
             
             return response()->json($clinicsResult, 200);
     
@@ -165,26 +180,41 @@ public function clinicSearch(Request $request){
     
             $clinicsResult = $clinics::where('name', 'like', '%' . $request['keyword'] . '%')->get();
 
+            //Replacing created_by id with the user name.
+            //Replacing updated_by id with the user name.
             foreach($clinicsResult as $item){
+
+                if($item['created_by'] != null){
 
                 $users = new User();
 
                 $usersResult = $users::where('id',  $item['created_by'])->first();
 
                 $item['created_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+                
+                }else{
 
-            } 
+                    $item['created_by'] = 'Not available';
 
-            foreach($clinicsResult as $item){
+                }
 
-                $users = new User();
+                if($item['edited_by'] != null){
 
-                $usersResult = $users::where('id',  $item['edited_by'])->first();
-
-                $item['edited_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
-
-            } 
+                    $users = new User();
     
+                    $usersResult = $users::where('id',  $item['edited_by'])->first();
+    
+                    $item['edited_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+    
+                    }else{
+    
+                        $item['edited_by'] = 'Not available';
+    
+                    }
+
+            } 
+
+          
             return response()->json($clinicsResult, 200);  
     
         }
@@ -328,6 +358,92 @@ public function clinicUpdate(Request $request){
 
     }
     
+}
+
+
+public function clinicDelete(Request $request){
+
+    $request -> validate([
+
+        "id" => 'required|integer'
+
+    ]);
+
+    
+    $help = new HelperClass;  
+    $request =$help -> sanitize($request->all());
+
+    $clinics = new Clinic();
+    $users = new User();
+    $user = Auth::user();
+
+    try {
+        
+        $clinicResult = $clinics::where('id', $request['id'])->first();
+
+        if(isset($clinicResult)){
+
+            $clinicResult['status'] = 'deleted';
+
+            if(!strpos($clinicResult['clinicEmail'], '(del)')){
+
+                $delEmail = $clinicResult['clinicEmail']."(del)";
+    
+                $clinicResult['clinicEmail'] = $delEmail;
+
+           }
+
+           if(!strpos($clinicResult['contactEmail'], '(del)')){
+
+                $delEmail = $clinicResult['contactEmail']."(del)";
+
+                $clinicResult['contactEmail'] = $delEmail;
+
+           }
+            
+            $clinicResult['edited_by'] = $user['id'];
+
+            $clinicResult->save();
+
+            //Deleting all users that belong to this clinic by clinic_id.
+            $usersResult = $users::where('clinic_id', $request['id'])->get();
+
+            foreach($usersResult as $item){
+
+               $item['status'] = 'deleted';
+
+               if(!strpos($item['email'], '(del)')){
+
+                    $delEmail = $item['email']."(del)";
+        
+                    $item['email'] = $delEmail;
+
+               }
+
+               $item['password'] = null;
+
+               $item['registration_hash'] = null;
+
+               $item['last_edited_by'] = $user['id'];
+
+               $item->save();
+
+               return response()->json("success", 200);
+
+            }
+
+        }else{
+
+            return response()->json('No such clinic found', 200);
+
+        }
+
+    } catch (exception $e) {
+
+        
+
+    }
+
 }
 
 

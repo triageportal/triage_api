@@ -225,6 +225,10 @@ public function userSearch(Request $request){
     
                         $item -> created_by = $result2['first_name']." ".$result2['last_name'];
                         
+                        }else{
+
+                            $item -> created_by = 'Not avaialble';
+
                         }
 
                     if($editorid != null){
@@ -233,6 +237,10 @@ public function userSearch(Request $request){
     
                         $item -> last_edited_by = $result2['first_name']." ".$result2['last_name'];
                         
+                        }else{
+
+                            $item -> last_edited_by = 'Not available';
+                            
                         }
                     
                 }
@@ -639,8 +647,12 @@ public function deleteUserCont($result, $user){
         $delEmail = $result -> email."(del)";
     
         $result -> email = $delEmail;
+
+        $result -> password = null;
+
+        $result -> registration_hash = null;
             
-        $result -> last_edited_by = $user-> id;
+        $result -> last_edited_by = $user-> id;       
     
         $result -> save();
     

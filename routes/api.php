@@ -73,6 +73,8 @@ function () {
     Route::get('/clinic','ClinicController@clinicSearch');
     //Used to update clinic information.
     Route::patch('/clinic', 'ClinicController@clinicUpdate');
+    //Used to delete a clinic. 
+    Route::delete('/clinic', 'ClinicController@clinicDelete');
 
 });
 
