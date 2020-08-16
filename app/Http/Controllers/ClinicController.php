@@ -138,12 +138,52 @@ public function clinicSearch(Request $request){
         if($request['keyword'] == '%all%'){
 
             $clinicsResult = $clinics::all();
+
+            foreach($clinicsResult as $item){
+
+                $users = new User();
+
+                $usersResult = $users::where('id',  $item['created_by'])->first();
+
+                $item['created_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+
+            } 
+
+            foreach($clinicsResult as $item){
+
+                $users = new User();
+
+                $usersResult = $users::where('id',  $item['edited_by'])->first();
+
+                $item['edited_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+
+            } 
             
             return response()->json($clinicsResult, 200);
     
         }else{
     
             $clinicsResult = $clinics::where('name', 'like', '%' . $request['keyword'] . '%')->get();
+
+            foreach($clinicsResult as $item){
+
+                $users = new User();
+
+                $usersResult = $users::where('id',  $item['created_by'])->first();
+
+                $item['created_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+
+            } 
+
+            foreach($clinicsResult as $item){
+
+                $users = new User();
+
+                $usersResult = $users::where('id',  $item['edited_by'])->first();
+
+                $item['edited_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+
+            } 
     
             return response()->json($clinicsResult, 200);  
     
