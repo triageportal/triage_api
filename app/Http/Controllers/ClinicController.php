@@ -456,7 +456,7 @@ public function clinicDelete(Request $request){
 
     } catch (exception $e) {
 
-        
+        return response()->json("error", 500); 
 
     }
 
