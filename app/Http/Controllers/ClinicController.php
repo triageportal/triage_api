@@ -240,6 +240,22 @@ public function assignClinic(Request $request){
     $clinics = new Clinic();
     $updateUser = new User();
 
+    if($request['id'] == 0 ){
+
+        $userId = $user['id'];
+
+        $updateResult = $updateUser::where('id', $userId)->firstOrFail();
+
+        $updateResult['clinic_id'] = 0;
+
+        $updateResult['last_edited_by'] =  $userId;
+
+        $updateResult -> update();
+
+        return response()->json("success", 200);
+
+    }
+
     try {
         
         $clinicsResult = $clinics::where('id', $request['id'])->firstOrFail();
@@ -403,7 +419,7 @@ public function clinicDelete(Request $request){
             
             $clinicResult['edited_by'] = $user['id'];
 
-            $clinicResult->save();
+            $clinicResult->update();
 
             //Deleting all users that belong to this clinic by clinic_id.
             $usersResult = $users::where('clinic_id', $request['id'])->get();
@@ -426,7 +442,7 @@ public function clinicDelete(Request $request){
 
                $item['last_edited_by'] = $user['id'];
 
-               $item->save();
+               $item->update();
 
                return response()->json("success", 200);
 

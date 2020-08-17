@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Clinic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -127,6 +128,22 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         $user = Auth::user();
+
+        if($user['clinic_id'] != 0){
+
+            $clinic = new Clinic();
+
+            $clinicResult = $clinic::where('id', $user['clinic_id'])->first();
+
+            $user['clinicName'] = $clinicResult['name'];
+
+        }else{
+
+            $user['clinicName'] = 'Not assigned';
+
+        }
+
+
         return response()->json([
             'user' => $user,
             'access_token' => $token,
