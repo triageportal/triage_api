@@ -316,7 +316,11 @@ public function clinicUpdate(Request $request){
 
         if($clinicEmailCheck['clinicEmail'] == $request['clinicEmail']){
 
-            return response()->json("This clinic email has been taken.", 500);
+            if($clinicEmailCheck['id'] != $request['id']){
+
+                return response()->json("This clinic email has been taken.", 500);
+
+            }
 
         }
 
@@ -328,7 +332,11 @@ public function clinicUpdate(Request $request){
 
         if($contactEmailCheck['contactEmail'] == $request['contactEmail']){
 
-            return response()->json("This contact email has been taken.", 500);
+            if($contactEmailCheck['id'] != $request['id']){
+
+                return response()->json("This contact email has been taken.", 500);
+
+            }
 
         }
 
