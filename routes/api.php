@@ -80,3 +80,6 @@ function () {
 
 //Assign clinic_id to the ADMIN user.
 Route::middleware('auth:api','isadmin')->patch('/assign-clinic','ClinicController@assignClinic');
+
+//Get language file.
+Route::get('/content','LanguageController@getContent');
