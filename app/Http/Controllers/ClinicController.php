@@ -147,7 +147,7 @@ public function clinicSearch(Request $request){
 
                     $clinics = new Clinic();
 
-                    $createdBy = $clinics::where('id', $item['id'])->first()->userCreatedBy;
+                    $createdBy = $clinics::find($item['id'])->userCreatedBy;
 
                     $item['created_by'] = $createdBy['first_name'].' '.$createdBy['last_name'];
 
@@ -161,7 +161,7 @@ public function clinicSearch(Request $request){
 
                     $clinics = new Clinic();
 
-                    $editedBy = $clinics::where('id', $item['id'])->first()->userEditedBy;
+                    $editedBy = $clinics::find($item['id'])->userEditedBy;
 
                     $item['edited_by'] = $editedBy['first_name'].' '.$editedBy['last_name'];
 
@@ -188,7 +188,7 @@ public function clinicSearch(Request $request){
            
                     $clinics = new Clinic();
 
-                    $createdBy = $clinics::where('id', $item['id'])->first()->userCreatedBy;
+                    $createdBy = $clinics::find($item['id'])->userCreatedBy;
 
                     $item['created_by'] = $createdBy['first_name'].' '.$createdBy['last_name'];
                 
@@ -202,7 +202,7 @@ public function clinicSearch(Request $request){
                   
                     $clinics = new Clinic();
 
-                    $editedBy = $clinics::where('id', $item['id'])->first()->userEditedBy;
+                    $editedBy = $clinics::find($item['id'])->userEditedBy;
 
                     $item['edited_by'] = $editedBy['first_name'].' '.$editedBy['last_name'];
     
