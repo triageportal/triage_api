@@ -145,11 +145,11 @@ public function clinicSearch(Request $request){
 
                 if( $item['created_by'] != null){
 
-                    $users = new User();
+                    $clinics = new Clinic();
 
-                    $usersResult = $users::where('id',  $item['created_by'])->first();
-    
-                    $item['created_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+                    $createdBy = $clinics::where('id', $item['id'])->first()->userCreatedBy;
+
+                    $item['created_by'] = $createdBy['first_name'].' '.$createdBy['last_name'];
 
                 }else{
 
@@ -159,11 +159,11 @@ public function clinicSearch(Request $request){
 
                 if($item['edited_by'] != null){
 
-                    $users = new User();
+                    $clinics = new Clinic();
 
-                    $usersResult = $users::where('id',  $item['edited_by'])->first();
-                    
-                    $item['edited_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+                    $editedBy = $clinics::where('id', $item['id'])->first()->userEditedBy;
+
+                    $item['edited_by'] = $editedBy['first_name'].' '.$editedBy['last_name'];
 
                 }else{
 
@@ -185,12 +185,12 @@ public function clinicSearch(Request $request){
             foreach($clinicsResult as $item){
 
                 if($item['created_by'] != null){
+           
+                    $clinics = new Clinic();
 
-                $users = new User();
+                    $createdBy = $clinics::where('id', $item['id'])->first()->userCreatedBy;
 
-                $usersResult = $users::where('id',  $item['created_by'])->first();
-
-                $item['created_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+                    $item['created_by'] = $createdBy['first_name'].' '.$createdBy['last_name'];
                 
                 }else{
 
@@ -199,12 +199,12 @@ public function clinicSearch(Request $request){
                 }
 
                 if($item['edited_by'] != null){
+                  
+                    $clinics = new Clinic();
 
-                    $users = new User();
-    
-                    $usersResult = $users::where('id',  $item['edited_by'])->first();
-    
-                    $item['edited_by'] = $usersResult['first_name'].' '.$usersResult['last_name'];
+                    $editedBy = $clinics::where('id', $item['id'])->first()->userEditedBy;
+
+                    $item['edited_by'] = $editedBy['first_name'].' '.$editedBy['last_name'];
     
                     }else{
     

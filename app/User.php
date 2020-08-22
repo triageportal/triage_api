@@ -59,4 +59,14 @@ protected $table = 'users';
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function clinic(){
+
+        //id - the column name (in clinic table) that is in another (child) table.
+        //clinic_id - column name (in user table) that is the current (this - parent) table.
+        return $this->hasOne('App\Clinic', 'id', 'clinic_id');
+
+    }
+
 }

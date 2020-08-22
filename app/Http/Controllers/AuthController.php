@@ -130,12 +130,12 @@ class AuthController extends Controller
         $user = Auth::user();
 
         if($user['clinic_id'] != 0){
+            
+            $users = new User();
 
-            $clinic = new Clinic();
+            $clinicName = $users::where('id', $user['id'])->first()->clinic->name;
 
-            $clinicResult = $clinic::where('id', $user['clinic_id'])->first();
-
-            $user['clinicName'] = $clinicResult['name'];
+            $user['clinicName'] =  $clinicName;
 
         }else{
 
@@ -145,10 +145,12 @@ class AuthController extends Controller
 
 
         return response()->json([
+            
             'user' => $user,
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => Auth::factory()->getTTL() * 60
+            
         ]);
     }
 }
