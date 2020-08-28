@@ -83,3 +83,6 @@ Route::middleware('auth:api','isadmin')->patch('/assign-clinic','ClinicControlle
 
 //Get language file.
 Route::get('/content','LanguageController@getContent');
+
+//Create new patient.
+Route::middleware('auth:api')->post('/patientdata', 'PatientController@createPatient');
