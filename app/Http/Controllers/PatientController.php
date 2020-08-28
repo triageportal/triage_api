@@ -61,8 +61,7 @@ class PatientController extends Controller
     
             $patient->save();
     
-            return response()->json('success', 200);    
-            
+            return response()->json('success', 200);                
 
         } catch (exception $e) {
             
