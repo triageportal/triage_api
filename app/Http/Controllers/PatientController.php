@@ -34,32 +34,35 @@ class PatientController extends Controller
     
             $user = Auth::user();
     
-            $patientCheck = $patient::where('email', $request['email'])->first();            
+            $patientCheck = $patient::where('email', $request['email'])->get();            
     
             if(isset($patientCheck)){
 
-                $patientClinicId = $patientCheck->createdBy->clinic_id;
+                foreach($patientCheck as $item){
 
-                if($user['clinic_id'] == $patientClinicId){
-    
-                    return response()->json('Patient already exists for this clinic', 500);
+                    $patientClinicId = $item->createdBy->clinic_id;
 
-                }
+                    if($user['clinic_id'] == $patientClinicId){
+
+                        return response()->json('Patient already exists for this clinic', 500);
     
-            }else{
-    
-                $patient->first_name = $request['first_name'];
-                $patient->last_name = $request['last_name'];
-                $patient->date_of_birth = $request['date_of_birth'];
-                $patient->gender = $request['gender'];
-                $patient->email = $request['email'];
-                $patient->created_by = $user['id'];
-        
-                $patient->save();
-        
-                return response()->json('success', 200);
-    
+                    }
+
+                }  
+
             }
+    
+            $patient->first_name = $request['first_name'];
+            $patient->last_name = $request['last_name'];
+            $patient->date_of_birth = $request['date_of_birth'];
+            $patient->gender = $request['gender'];
+            $patient->email = $request['email'];
+            $patient->created_by = $user['id'];
+    
+            $patient->save();
+    
+            return response()->json('success', 200);    
+            
 
         } catch (exception $e) {
             
