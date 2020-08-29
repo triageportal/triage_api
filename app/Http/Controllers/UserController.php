@@ -48,7 +48,7 @@ class UserController extends Controller
             
             if($user['access_type'] == 'admin' && $user['clinic_id'] == 0){
 
-                return response()->json("clinic must be assigned first", 500);
+                return response()->json(['admin' =>"Clinic must be assigned first"], 500);
 
             }
     
