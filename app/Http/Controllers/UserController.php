@@ -37,8 +37,7 @@ class UserController extends Controller
                 'last_name' => 'required|max:50',
                 'email' => 'required|unique:users|email|max:50',            
                 'access_type' => 'required',
-                'position' => 'required'          
-               
+                'position' => 'required'
             ]);
 
             $help = new HelperClass;  
@@ -636,7 +635,9 @@ public function userDelete(Request $request){
 
 public function deleteUserCont($result, $user){
 
-    if(strpos($result['email'], '(del)')){
+    $current_date_time = Carbon::now()->toDateTimeString();
+
+    if(strpos($result['email'], '(^del^')){
 
         return response()->json('user already deleted', 500);
 
@@ -644,7 +645,7 @@ public function deleteUserCont($result, $user){
 
         $result -> status = 'deleted';
 
-        $delEmail = $result -> email."(del)";
+        $delEmail = $result -> email."(^del^".$current_date_time.")";
     
         $result -> email = $delEmail;
 

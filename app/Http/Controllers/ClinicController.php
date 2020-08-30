@@ -387,6 +387,8 @@ public function clinicUpdate(Request $request){
 
 public function clinicDelete(Request $request){
 
+    $current_date_time = Carbon::now()->toDateTimeString();
+
     $request -> validate([
 
         "id" => 'required|integer'
@@ -407,19 +409,25 @@ public function clinicDelete(Request $request){
 
         if(isset($clinicResult)){
 
+            if($clinicResult['status'] == 'deleted'){
+
+                return response()->json('Clinic already deleted', 200);
+
+            }
+
             $clinicResult['status'] = 'deleted';
 
-            if(!strpos($clinicResult['clinicEmail'], '(del)')){
+            if(!strpos($clinicResult['clinicEmail'], '(^del^')){
 
-                $delEmail = $clinicResult['clinicEmail']."(del)";
+                $delEmail = $clinicResult['clinicEmail']."(^del^".$current_date_time.")";
     
                 $clinicResult['clinicEmail'] = $delEmail;
 
            }
 
-           if(!strpos($clinicResult['contactEmail'], '(del)')){
+           if(!strpos($clinicResult['contactEmail'], '(^del^')){
 
-                $delEmail = $clinicResult['contactEmail']."(del)";
+                $delEmail = $clinicResult['contactEmail']."(^del^".$current_date_time.")";
 
                 $clinicResult['contactEmail'] = $delEmail;
 
@@ -432,13 +440,19 @@ public function clinicDelete(Request $request){
             //Deleting all users that belong to this clinic by clinic_id.
             $usersResult = $users::where('clinic_id', $request['id'])->get();
 
+            if(count($usersResult) < 1){
+
+                return response()->json("success", 200);
+
+            }
+
             foreach($usersResult as $item){
 
                $item['status'] = 'deleted';
 
-               if(!strpos($item['email'], '(del)')){
+               if(!strpos($item['email'], '(^del^')){
 
-                    $delEmail = $item['email']."(del)";
+                    $delEmail = $item['email']."(^del^".$current_date_time.")";
         
                     $item['email'] = $delEmail;
 
