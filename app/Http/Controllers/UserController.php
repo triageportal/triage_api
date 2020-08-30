@@ -625,10 +625,7 @@ public function userDelete(Request $request){
         return response()->json('error', 500);
 
     }
-
-
-
-
+    
 }
 
 
