@@ -49,6 +49,9 @@ class ClinicController extends Controller
 
         $help = new HelperClass;  
         $request =$help -> sanitize($request->all());
+
+        //Capitalizes the first letter of each word in clinic name.
+        $request['name'] = ucwords($request['name']);
        
 
         $user = Auth::user();  
@@ -273,7 +276,7 @@ public function assignClinic(Request $request){
         return response()->json("success", 200);
 
     } catch (exception $e) {
-
+        
          return response()->json("error", 500);
          
     }
@@ -305,6 +308,9 @@ public function clinicUpdate(Request $request){
 
     $help = new HelperClass;  
     $request =$help -> sanitize($request->all());
+
+    //Capitalizes the first letter of each word in clinic name.
+    $request['name'] = ucwords($request['name']);
    
     $user = Auth::user();  
     $clinics = new Clinic();

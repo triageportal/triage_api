@@ -33,6 +33,6 @@ class SendResetLink extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.sendResetBody');
+        return $this->subject("User Profile Has Been Reset")->view('mails.sendResetBody');
     }
 }

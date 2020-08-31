@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Clinic;
+use App\Http\Controllers\EmailController;
 use Carbon\Carbon;
 use Exception;
 use Tymon\JWTAuth\Facades\JWTAuth; 
@@ -73,8 +74,10 @@ class UserController extends Controller
             $resultClinic = $clinic::where('id', $user['clinic_id'])->first();
 
             $language = $resultClinic['language'];
+
+            $sendEmail = new EmailController();
             
-            $this -> sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
+            $sendEmail->sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
             
 
             return response()->json('success', 200);
@@ -376,8 +379,10 @@ public function updateUser(Request $request){
             $result -> last_edited_by = $user-> id;
     
             $result -> update();
+
+            $sendEmail = new EmailController();
     
-            $this->sendUpdateEmail($result, $user, $result['email']);
+            $sendEmail->sendUpdateEmail($result, $user, $result['email']);
     
             return response()->json("success", 200);
     
@@ -452,7 +457,9 @@ public function updateUser(Request $request){
 
                     $language = $resultClinic['language'];
 
-                    $this -> sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
+                    $sendEmail = new EmailController();
+
+                    $sendEmail -> sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
                     
 
                     return response()->json('success', 200);
@@ -519,7 +526,9 @@ public function userResetSuspend(Request $request){
 
                 $language = $resultClinic['language'];
 
-                $this -> sendResetEmail($result['email'], $registrationHash, $language);
+                $sendEmail = new EmailController();
+
+                $sendEmail -> sendResetEmail($result['email'], $registrationHash, $language);
 
                 return response()->json('success', 200);
 
@@ -532,7 +541,9 @@ public function userResetSuspend(Request $request){
 
                 $result->update(); 
 
-                $this -> sendSuspendEmail($result['email'], $user);
+                $sendEmail = new EmailController();
+
+                $sendEmail -> sendSuspendEmail($result['email'], $user);
 
                 return response()->json('success', 200);
 
@@ -621,7 +632,7 @@ public function userDelete(Request $request){
 
 
     } catch (exception $e) {
-
+        
         return response()->json('error', 500);
 
     }
@@ -689,40 +700,15 @@ public function addSuperUserForClinic($newClinic, $request, $user){
         $users -> save();
 
         $language = $newClinic['language'];
+
+        $sendEmail = new EmailController();
         
-        $this -> sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
+        $sendEmail -> sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
 
     } catch (exception $e) {
         return $e;
     }       
   
-}
-
-
-
-
-public function sendRegistrationEmail($user, $email, $language, $link){
-    
-    Mail::to($email)->send(new SendLink($link, $user, $language));
-
-}
-
-public function sendUpdateEmail($users, $user, $email){
-
-    Mail::to($email)->send(new SendUpdate($users, $user));
-
-}
-
-public function sendResetEmail($email, $registrationHash, $language){
-
-    Mail::to($email)->send(new SendResetLink($registrationHash, $language));
-
-}
-
-public function sendSuspendEmail($email, $user){
-
-    Mail::to($email)->send(new SendSuspend($user));
-
 }
 
 }

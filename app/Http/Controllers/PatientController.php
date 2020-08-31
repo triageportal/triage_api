@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Patient;
 use App\Http\Helper\HelperClass;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\EmailController;
 use Exception;
 
 
@@ -18,11 +19,21 @@ class PatientController extends Controller
 
             'first_name'=>'required',
             'last_name'=>'required',
-            'date_of_birth'=>'required|date',
+            'date_of_birth'=>'required',
             'gender'=>'required',
             'email'=>'required|email'      
 
         ]);
+
+        $dob_Month = $request['date_of_birth']['month'];
+
+        $dob_Day = $request['date_of_birth']['day'];
+
+        $dob_Year = $request['date_of_birth']['year'];               
+       
+        $date = strtotime($dob_Month."/".$dob_Day."/". $dob_Year); 
+
+        $request['date_of_birth'] = date('Y-m-d H:i:s', $date); 
 
         try {
             
@@ -60,12 +71,18 @@ class PatientController extends Controller
             $patient->created_by = $user['id'];
     
             $patient->save();
+
+            $sendEmail = new EmailController();
+
+            $newPatient = Patient::where('email', $request['email'])->where('created_by', $user['id'])->first();
+
+            $sendEmail->sendPatientRegistrationEmail($newPatient['email'], $newPatient, 'ENG');
     
             return response()->json('success', 200);                
 
-        } catch (exception $e) {
+        } catch (exception $e) { 
             
-            return response()->json('error', 500);
+           return response()->json('error', 500);
 
         }        
     }

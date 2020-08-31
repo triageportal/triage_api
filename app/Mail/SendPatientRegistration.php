@@ -7,23 +7,23 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SendUpdate extends Mailable
+class SendPatientRegistration extends Mailable
 {
     use Queueable, SerializesModels;
 
-
-    public $users;
-    public $user;
+    public $patient;
+    public $language;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($users, $user)
+    public function __construct($patient,$language)
     {
-        $this->users = $users;
-        $this->user = $user;
+       $this->patient=$patient; 
+       $this->language=$language;
+
     }
 
     /**
@@ -33,6 +33,6 @@ class SendUpdate extends Mailable
      */
     public function build()
     {
-        return $this->subject("User Profile Has Been Updated")->view('mails.sendUpdateBody');        
+        return $this->subject("New Patient Registration")->view('mails.SendPatientRegistrationBody');
     }
 }

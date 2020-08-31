@@ -19,7 +19,7 @@ class CreatePatientTable extends Migration
             $table->String('last_name', 50);
             $table->date('date_of_birth');
             $table->String('gender', 10);
-            $table->String('email', 50);
+            $table->String('email', 150);
             $table->integer('created_by');
             $table->integer('updated_by')->nullable();
             $table->timestamps();

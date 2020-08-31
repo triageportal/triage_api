@@ -30,6 +30,6 @@ class SendSuspend extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.sendSuspendBody');
+        return $this->subject("User Profile Has Been Suspended")->view('mails.sendSuspendBody');
     }
 }

@@ -33,6 +33,6 @@ class SendLink extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.sendLinkBody');
+        return $this->subject("New User Registration")->view('mails.sendLinkBody');
     }
 }

@@ -26,11 +26,11 @@ class CreateClinicTable extends Migration
             $table->String('stateOrRegion', 50);
             $table->String('country', 50);
             $table->String('phone', 50);
-            $table->String('clinicEmail', 100);
+            $table->String('clinicEmail', 150);
             $table->String('website', 255);
             $table->String('language', 50);
             $table->String('contactName', 100);
-            $table->String('contactEmail', 100);
+            $table->String('contactEmail', 150);
             $table->String('contactPhone', 50);
             $table ->Integer('created_by')->nullable();
 
