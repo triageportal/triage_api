@@ -212,8 +212,10 @@ public function userSearch(Request $request){
 
                 $searchKeyword = $request['keyword'];
 
-                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') -> orWhere('last_name', 'like', '%' . $searchKeyword . '%') -> 
-                where('status', '!=', 'deleted') -> get();        
+                $result = $users::where('status', '!=', 'deleted')->
+                where('first_name', 'like', '%' . $searchKeyword . '%') -> 
+                orWhere('last_name', 'like', '%' . $searchKeyword . '%') -> 
+                get();        
                  
                 foreach($result as $item){
 
