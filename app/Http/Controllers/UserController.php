@@ -215,20 +215,19 @@ public function userSearch(Request $request){
                 $hospitalId = $user -> clinic_id;
 
 
-                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%')->
-                
-                orWhere('last_name', 'like', '%' . $searchKeyword . '%')->
-                
-                where(function($query) use($hospitalId){
+                //orWhere condition must be in closure function.
+                $result = $users::where(function($query) use($searchKeyword){
 
-                    $query->where([
+                    $query -> where('first_name', 'like', '%' . $searchKeyword . '%')->
 
-                        ['status', '!=', 'deleted'],
-                        ['clinic_id', $hospitalId]
+                    orWhere('last_name', 'like', '%' . $searchKeyword . '%');
 
-                    ]);
+                })->where([
 
-                })->get();
+                    ['status', '!=', 'deleted'],
+                    ['clinic_id', $hospitalId]
+
+                ])->get();
 
                  
                 foreach($result as $item){
@@ -272,22 +271,21 @@ public function userSearch(Request $request){
 
                 $hospitalId = $user -> clinic_id;
 
-                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%')->
+                //orWhere condition must be in closure function.
+                $result = $users::where(function($query) use($searchKeyword){
 
-                orWhere('last_name', 'like', '%' . $searchKeyword . '%')->
+                    $query -> where('first_name', 'like', '%' . $searchKeyword . '%')->
 
-                where(function($query) use($hospitalId){
+                    orWhere('last_name', 'like', '%' . $searchKeyword . '%');
 
-                    $query -> where([
+                })->where([
 
-                        ['status', '!=', 'deleted'],
-                        ['clinic_id', $hospitalId],
-                        ['access_type', '!=', 'superuser'],
-                        ['access_type', '!=', 'admin']
+                    ['status', '!=', 'deleted'],
+                    ['clinic_id', $hospitalId],
+                    ['access_type', '!=', 'superuser'],
+                    ['access_type', '!=', 'admin']
 
-                    ]);
-
-                })->get();      
+                ])->get();   
                  
                 foreach($result as $item){
 
@@ -321,24 +319,21 @@ public function userSearch(Request $request){
 
                 $hospitalId = $user -> clinic_id;
 
+                //orWhere condition must be in closure function.
+                $result = $users::where(function($query) use($searchKeyword){
 
-                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%')->
-                
-                orWhere('last_name', 'like', '%' . $searchKeyword . '%')->
+                    $query -> where('first_name', 'like', '%' . $searchKeyword . '%')->
 
-                where(function($query) use($hospitalId){
+                    orWhere('last_name', 'like', '%' . $searchKeyword . '%');
 
-                    $query->where([
-                        
-                        ['status', '!=', 'deleted'],
-                        ['access_type', '!=', 'admin'],
-                        ['clinic_id', $hospitalId]
+                })->where([
 
-                    ]);
+                    ['status', '!=', 'deleted'],
+                    ['access_type', '!=', 'admin'],
+                    ['clinic_id', $hospitalId]
 
-                })->get();
-       
-                 
+                ])->get();   
+            
                 foreach($result as $item){
 
                     $userid = $item -> created_by;
