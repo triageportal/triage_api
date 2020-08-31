@@ -212,10 +212,24 @@ public function userSearch(Request $request){
 
                 $searchKeyword = $request['keyword'];
 
-                $result = $users::where('status', '!=', 'deleted')->
-                where('first_name', 'like', '%' . $searchKeyword . '%') -> 
-                orWhere('last_name', 'like', '%' . $searchKeyword . '%') -> 
-                get();        
+                $hospitalId = $user -> clinic_id;
+
+
+                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%')->
+                
+                orWhere('last_name', 'like', '%' . $searchKeyword . '%')->
+                
+                where(function($query) use($hospitalId){
+
+                    $query->where([
+
+                        ['status', '!=', 'deleted'],
+                        ['clinic_id', $hospitalId]
+
+                    ]);
+
+                })->get();
+
                  
                 foreach($result as $item){
 
@@ -258,9 +272,22 @@ public function userSearch(Request $request){
 
                 $hospitalId = $user -> clinic_id;
 
-                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') ->orWhere('last_name', 'like', '%' . $searchKeyword . '%') 
-                -> where('clinic_id', $hospitalId) ->where('access_type', '!=', 'admin') ->where('access_type', '!=', 'superuser') -> where('status', '!=', 'deleted') -> 
-                get();        
+                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%')->
+
+                orWhere('last_name', 'like', '%' . $searchKeyword . '%')->
+
+                where(function($query) use($hospitalId){
+
+                    $query -> where([
+
+                        ['status', '!=', 'deleted'],
+                        ['clinic_id', $hospitalId],
+                        ['access_type', '!=', 'superuser'],
+                        ['access_type', '!=', 'admin']
+
+                    ]);
+
+                })->get();      
                  
                 foreach($result as $item){
 
@@ -294,8 +321,23 @@ public function userSearch(Request $request){
 
                 $hospitalId = $user -> clinic_id;
 
-                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%') ->orWhere('last_name', 'like', '%' . $searchKeyword . '%') 
-                -> where('clinic_id', $hospitalId) ->where('access_type', '!=', 'admin') -> where('status', '!=', 'deleted') -> get();        
+
+                $result = $users::where('first_name', 'like', '%' . $searchKeyword . '%')->
+                
+                orWhere('last_name', 'like', '%' . $searchKeyword . '%')->
+
+                where(function($query) use($hospitalId){
+
+                    $query->where([
+                        
+                        ['status', '!=', 'deleted'],
+                        ['access_type', '!=', 'admin'],
+                        ['clinic_id', $hospitalId]
+
+                    ]);
+
+                })->get();
+       
                  
                 foreach($result as $item){
 
