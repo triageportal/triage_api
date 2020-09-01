@@ -19,19 +19,21 @@ class PatientController extends Controller
 
             'first_name'=>'required',
             'last_name'=>'required',
-            'date_of_birth'=>'required',
+            'year'=>'required',
+            'month'=>'required',
+            'date'=>'required',
             'gender'=>'required',
             'email'=>'required|email'      
 
         ]);
 
-        $dob_Month = $request['date_of_birth']['month'];
+        $dob_Month = $request['month'];
 
-        $dob_Day = $request['date_of_birth']['day'];
+        $dob_Date = $request['date'];
 
-        $dob_Year = $request['date_of_birth']['year'];               
+        $dob_Year = $request['year'];               
        
-        $date = strtotime($dob_Month."/".$dob_Day."/". $dob_Year); 
+        $date = strtotime($dob_Month."/".$dob_Date."/". $dob_Year); 
 
         $request['date_of_birth'] = date('Y-m-d H:i:s', $date); 
 
