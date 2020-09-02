@@ -33,6 +33,6 @@ class SendPatientRegistration extends Mailable
      */
     public function build()
     {
-        return $this->subject("New Patient Registration")->view('mails.sendRegistrationBody');
+        return $this->subject("New Patient Registration")->view('mails.sendRegBody');
     }
 }
