@@ -10,6 +10,7 @@ use App\Http\Controllers\EmailController;
 use Exception;
 
 
+
 class PatientController extends Controller
 {
     
@@ -26,6 +27,7 @@ class PatientController extends Controller
             'email'=>'required|email'      
 
         ]);
+      
 
         $dob_Month = $request['month'];
 
@@ -83,8 +85,17 @@ class PatientController extends Controller
             return response()->json('success', 200);                
 
         } catch (exception $e) { 
-            
-           return response()->json('error', 500);
+           
+           //"php artisan config:clear" to reload changes in .env file.             
+           if(app()->environment() == 'dev'){
+
+                return $e;
+
+           }else{
+
+                return response()->json('error', 500);
+
+           } 
 
         }        
     }

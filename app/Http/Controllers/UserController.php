@@ -140,7 +140,16 @@ public function validateRegistration(Request $request){
 
         }catch(exception $e){
 
-            return response()->json('error', 401);
+           //"php artisan config:clear" to reload changes in .env file.             
+           if(app()->environment() == 'dev'){
+
+            return $e;
+
+       }else{
+
+            return response()->json('error', 500);
+
+       } 
 
         }  
 
@@ -181,7 +190,16 @@ public function completeRegistration(Request $request){
 
     }catch(exception $e){
 
-        return response()->json('error', 401);
+           //"php artisan config:clear" to reload changes in .env file.             
+           if(app()->environment() == 'dev'){
+
+            return $e;
+
+       }else{
+
+            return response()->json('error', 500);
+
+       } 
 
     }
 
@@ -427,7 +445,16 @@ public function updateUser(Request $request){
     
         }catch(exception $e){
     
+           //"php artisan config:clear" to reload changes in .env file.             
+           if(app()->environment() == 'dev'){
+
+            return $e;
+
+       }else{
+
             return response()->json('error', 500);
+
+       } 
     
         }
     }else{
@@ -451,7 +478,16 @@ public function updateUser(Request $request){
 
             } catch (exception $e) {
 
-                return response()->json('error', 500);
+                   //"php artisan config:clear" to reload changes in .env file.             
+           if(app()->environment() == 'dev'){
+
+            return $e;
+
+       }else{
+
+            return response()->json('error', 500);
+
+       } 
 
             }        
 
@@ -505,7 +541,16 @@ public function updateUser(Request $request){
                 
             } catch (exception $e) {
 
-                return response()->json('error', 500);
+                   //"php artisan config:clear" to reload changes in .env file.             
+           if(app()->environment() == 'dev'){
+
+            return $e;
+
+       }else{
+
+            return response()->json('error', 500);
+
+       } 
 
             }
 
@@ -594,7 +639,16 @@ public function userResetSuspend(Request $request){
        
     } catch (exception $e) {
 
-        return response()->json('error', 500);
+           //"php artisan config:clear" to reload changes in .env file.             
+           if(app()->environment() == 'dev'){
+
+            return $e;
+
+       }else{
+
+            return response()->json('error', 500);
+
+       } 
 
     }
 
@@ -672,7 +726,16 @@ public function userDelete(Request $request){
 
     } catch (exception $e) {
         
-        return response()->json('error', 500);
+          //"php artisan config:clear" to reload changes in .env file.             
+          if(app()->environment() == 'dev'){
+
+            return $e;
+
+       }else{
+
+            return response()->json('error', 500);
+
+       } 
 
     }
     
@@ -745,7 +808,17 @@ public function addSuperUserForClinic($newClinic, $request, $user){
         $sendEmail -> sendRegistrationEmail($user, $request['email'], $language, $registrationHash);
 
     } catch (exception $e) {
-        return $e;
+        
+        //"php artisan config:clear" to reload changes in .env file.             
+           if(app()->environment() == 'dev'){
+
+            return $e;
+
+       }else{
+
+            return response()->json('error', 500);
+
+       } 
     }       
   
 }

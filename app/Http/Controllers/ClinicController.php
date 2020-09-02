@@ -223,7 +223,16 @@ public function clinicSearch(Request $request){
         }
     } catch (exception $e) {
 
-        return response()->json("error", 500);  
+           //"php artisan config:clear" to reload changes in .env file.             
+           if(app()->environment() == 'dev'){
+
+            return $e;
+
+       }else{
+
+            return response()->json('error', 500);
+
+       }   
 
     }
 }
@@ -277,7 +286,16 @@ public function assignClinic(Request $request){
 
     } catch (exception $e) {
         
-         return response()->json("error", 500);
+            //"php artisan config:clear" to reload changes in .env file.             
+            if(app()->environment() == 'dev'){
+
+                return $e;
+
+           }else{
+
+                return response()->json('error', 500);
+
+           } 
          
     }
 
@@ -484,7 +502,16 @@ public function clinicDelete(Request $request){
 
     } catch (exception $e) {
 
-        return response()->json("error", 500); 
+           //"php artisan config:clear" to reload changes in .env file.             
+           if(app()->environment() == 'dev'){
+
+            return $e;
+
+       }else{
+
+            return response()->json('error', 500);
+
+       } 
 
     }
 
