@@ -86,3 +86,6 @@ Route::get('/content','LanguageController@getContent');
 
 //Create new patient.
 Route::middleware('auth:api')->post('/patientdata', 'PatientController@createPatient');
+
+//Search for a patient.
+Route::middleware('auth:api')->get('/patientdata', 'PatientController@searchPatient');

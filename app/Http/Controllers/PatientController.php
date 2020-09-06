@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Patient;
+use App\User;
 use App\Http\Helper\HelperClass;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\EmailController;
@@ -102,7 +103,85 @@ class PatientController extends Controller
 
 
 
+public function searchPatient(Request $request){
 
+    $request->validate([
+
+        'keyword' => 'required|min:3'
+
+    ]);
+
+    $help = new HelperClass();
+
+    $request = $help->sanitize($request->all());
+
+    $patient = new Patient();
+
+    $users = new User();
+
+    $user = Auth::user();
+
+        try {
+            
+            $patientResult =  $patient::where(function($query) use($request){
+
+                $query->where('first_name', 'like', '%'.$request['keyword'].'%')->
+                orWhere('last_name', 'like', '%'.$request['keyword'].'%');
+        
+            })->get();
+
+            $ptByClinicId = [];
+
+            foreach($patientResult as $item){                
+
+                if($item->createdBy->clinic_id == $user['clinic_id']){
+                    
+                    unset($item->createdBy);
+
+                    unset($item->updatedBy);
+
+                    $createdByUser = $users::where('id', $item['created_by'])->first();
+
+                    $item['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
+
+                    if($item['updated_by'] != null){                        
+
+                        $updatedByUser = $users::where('id', $item['updated_by'])->first();
+
+                        $item['updated_by'] = $updatedByUser['first_name'].' '.$updatedByUser['last_name'];
+
+                    } else{
+
+                        $item['updated_by'] = 'Not available';
+
+                    }
+
+                    array_push($ptByClinicId, $item);
+
+                }
+
+            }
+
+            return response()->json($ptByClinicId, '200');
+            
+
+        } catch (exception $e) {
+           
+            //"php artisan config:clear" to reload changes in .env file.             
+            if(app()->environment() == 'dev'){
+
+                    return $e;
+
+            }else{
+
+                    return response()->json('error', 500);
+
+            } 
+
+        }
+
+
+}
 
 
 
