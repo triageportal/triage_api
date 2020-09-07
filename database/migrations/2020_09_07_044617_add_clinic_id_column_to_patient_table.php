@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddEditedByColumnToClinicsTable extends Migration
+class AddClinicIdColumnToPatientTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class AddEditedByColumnToClinicsTable extends Migration
      */
     public function up()
     {
-        Schema::table('clinics', function (Blueprint $table) {
-
-            $table ->integer('edited_by')->nullable();
-
+        Schema::table('patients', function (Blueprint $table) {
+            $table->integer('clinic_id');
         });
     }
 
@@ -27,8 +25,8 @@ class AddEditedByColumnToClinicsTable extends Migration
      */
     public function down()
     {
-        Schema::table('clinics', function (Blueprint $table) {
-            $table->dropColumn('edited_by');
+        Schema::table('patients', function (Blueprint $table) {
+            //
         });
     }
 }

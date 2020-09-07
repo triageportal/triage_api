@@ -15,11 +15,11 @@ class CreatePatientTable extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
-            $table->String('first_name', 50);
-            $table->String('last_name', 50);
+            $table->string('first_name', 50);
+            $table->string('last_name', 50);
             $table->date('date_of_birth');
-            $table->String('gender', 10);
-            $table->String('email', 150);
+            $table->string('gender', 10);
+            $table->string('email', 150);
             $table->integer('created_by');
             $table->integer('updated_by')->nullable();
             $table->timestamps();

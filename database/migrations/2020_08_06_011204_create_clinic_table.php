@@ -17,22 +17,22 @@ class CreateClinicTable extends Migration
 
             $table->id();
             $table->timestamps();
-            $table->String('name', 100);
-            $table->String('status', 50);
-            $table->String('addressLineOne', 255);
-            $table->String('addressLineTwo', 255)->nullable();
-            $table->String('city', 50);
-            $table->String('zipCode', 15);
-            $table->String('stateOrRegion', 50);
-            $table->String('country', 50);
-            $table->String('phone', 50);
-            $table->String('clinicEmail', 150);
-            $table->String('website', 255);
-            $table->String('language', 50);
-            $table->String('contactName', 100);
-            $table->String('contactEmail', 150);
-            $table->String('contactPhone', 50);
-            $table ->Integer('created_by')->nullable();
+            $table->string('name', 100);
+            $table->string('status', 50);
+            $table->string('addressLineOne', 255);
+            $table->string('addressLineTwo', 255)->nullable();
+            $table->string('city', 50);
+            $table->string('zipCode', 15);
+            $table->string('stateOrRegion', 50);
+            $table->string('country', 50);
+            $table->string('phone', 50);
+            $table->string('clinicEmail', 150);
+            $table->string('website', 255);
+            $table->string('language', 50);
+            $table->string('contactName', 100);
+            $table->string('contactEmail', 150);
+            $table->string('contactPhone', 50);
+            $table ->integer('created_by')->nullable();
 
         });
     }

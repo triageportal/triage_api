@@ -56,9 +56,7 @@ class PatientController extends Controller
 
                 foreach($patientCheck as $item){
 
-                    $patientClinicId = $item->createdBy->clinic_id;
-
-                    if($user['clinic_id'] == $patientClinicId){
+                    if($user['clinic_id'] == $item['clinic_id']){
 
                         return response()->json('Patient already exists for this clinic', 500);
     
@@ -74,6 +72,7 @@ class PatientController extends Controller
             $patient->gender = $request['gender'];
             $patient->email = $request['email'];
             $patient->created_by = $user['id'];
+            $patient->clinic_id = $user['clinic_id'];
     
             $patient->save();
 
@@ -128,41 +127,37 @@ public function searchPatient(Request $request){
                 $query->where('first_name', 'like', '%'.$request['keyword'].'%')->
                 orWhere('last_name', 'like', '%'.$request['keyword'].'%');
         
-            })->get();
+            })->where('clinic_id', $user['clinic_id'])->get();
 
-            $ptByClinicId = [];
+            foreach($patientResult as $item){     
+                                   
+                unset($item->createdBy);
 
-            foreach($patientResult as $item){                
+                unset($item->updatedBy);
 
-                if($item->createdBy->clinic_id == $user['clinic_id']){
-                    
-                    unset($item->createdBy);
+                $createdByUser = $users::where('id', $item['created_by'])->first();
 
-                    unset($item->updatedBy);
+                $item['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
 
-                    $createdByUser = $users::where('id', $item['created_by'])->first();
+                if($item['updated_by'] != null){                        
 
-                    $item['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
+                    $updatedByUser = $users::where('id', $item['updated_by'])->first();
 
-                    if($item['updated_by'] != null){                        
+                    $item['updated_by'] = $updatedByUser['first_name'].' '.$updatedByUser['last_name'];
 
-                        $updatedByUser = $users::where('id', $item['updated_by'])->first();
+                } else{
 
-                        $item['updated_by'] = $updatedByUser['first_name'].' '.$updatedByUser['last_name'];
-
-                    } else{
-
-                        $item['updated_by'] = 'Not available';
-
-                    }
-
-                    array_push($ptByClinicId, $item);
+                    $item['updated_by'] = 'Not available';
 
                 }
 
+                $item['clinic_name'] = $item->assignedClinic->name;
+
+                unset($item->assignedClinic);
+
             }
 
-            return response()->json($ptByClinicId, '200');
+            return response()->json($patientResult, '200');
             
 
         } catch (exception $e) {
@@ -179,7 +174,6 @@ public function searchPatient(Request $request){
             } 
 
         }
-
 
 }
 

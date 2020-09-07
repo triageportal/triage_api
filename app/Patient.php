@@ -31,4 +31,10 @@ class Patient extends Model
 
     }
 
+    public function assignedClinic(){
+
+        return $this->hasOne('App\Clinic', 'id', 'clinic_id');
+
+    }
+
 }

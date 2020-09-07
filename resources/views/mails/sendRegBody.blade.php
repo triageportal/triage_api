@@ -18,7 +18,7 @@
 </head>
 
 <body>
-<h1>Welcome to {{$patient->createdBy->clinic->name}}!</h1>
+<h1>Welcome to {{$patient->assignedClinic->name}}!</h1>
 <h3>Your patient account has been created.</h3>
 <table>
 <tbody>

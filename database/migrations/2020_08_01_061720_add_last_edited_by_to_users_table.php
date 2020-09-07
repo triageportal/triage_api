@@ -14,7 +14,7 @@ class AddLastEditedByToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table ->Integer('last_edited_by')->nullable();
+            $table ->integer('last_edited_by')->nullable();
         });
     }
 
