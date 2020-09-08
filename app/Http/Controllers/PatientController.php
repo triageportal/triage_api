@@ -60,6 +60,7 @@ class PatientController extends Controller
 
                     if($user['clinic_id'] == $item['clinic_id']){
 
+                        //Replacing created_by and updated_by ids with actua;l user names.
                         $createdByUser = $users::where('id', $item['created_by'])->first();
 
                         $item['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
@@ -78,6 +79,7 @@ class PatientController extends Controller
         
                         $item['clinic_name'] = $item->assignedClinic->name;
         
+                        //Unsetting eloquent relationships.
                         unset($item->assignedClinic);
                         
                         unset($item->createdBy);
@@ -88,7 +90,7 @@ class PatientController extends Controller
 
                         $patientExists['patient'] = $item;
                         
-                        return response()->json($patientExists, 500);
+                        return response()->json($patientExists, 200);
     
                     }
 
@@ -112,6 +114,7 @@ class PatientController extends Controller
 
             $sendEmail->sendPatientRegistrationEmail($newPatient['email'], $newPatient, 'ENG');
 
+            //Replacing created_by and updated_by ids with actua;l user names.
             $createdByUser = $users::where('id', $newPatient['created_by'])->first();
 
             $newPatient['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
@@ -130,6 +133,7 @@ class PatientController extends Controller
 
             $newPatient['clinic_name'] = $newPatient->assignedClinic->name;
 
+            //Unsetting eloquent relationships. 
             unset($newPatient->assignedClinic);
             
             unset($newPatient->createdBy);
