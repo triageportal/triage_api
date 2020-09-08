@@ -49,6 +49,8 @@ class PatientController extends Controller
             $patient = new Patient();
     
             $user = Auth::user();
+
+            $users = new User();
     
             $patientCheck = $patient::where('email', $request['email'])->get();            
     
@@ -58,7 +60,35 @@ class PatientController extends Controller
 
                     if($user['clinic_id'] == $item['clinic_id']){
 
-                        return response()->json('Patient already exists for this clinic', 500);
+                        $createdByUser = $users::where('id', $item['created_by'])->first();
+
+                        $item['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
+        
+                        if($item['updated_by'] != null){                        
+        
+                            $updatedByUser = $users::where('id', $item['updated_by'])->first();
+        
+                            $item['updated_by'] = $updatedByUser['first_name'].' '.$updatedByUser['last_name'];
+        
+                        } else{
+        
+                            $item['updated_by'] = 'Not available';
+        
+                        }
+        
+                        $item['clinic_name'] = $item->assignedClinic->name;
+        
+                        unset($item->assignedClinic);
+                        
+                        unset($item->createdBy);
+        
+                        unset($item->updatedBy);
+
+                        $patientExists['result'] = 'exists';
+
+                        $patientExists['patient'] = $item;
+                        
+                        return response()->json($patientExists, 500);
     
                     }
 
@@ -81,8 +111,36 @@ class PatientController extends Controller
             $newPatient = Patient::where('email', $request['email'])->where('created_by', $user['id'])->first();
 
             $sendEmail->sendPatientRegistrationEmail($newPatient['email'], $newPatient, 'ENG');
+
+            $createdByUser = $users::where('id', $newPatient['created_by'])->first();
+
+            $newPatient['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
+
+            if($newPatient['updated_by'] != null){                        
+
+                $updatedByUser = $users::where('id', $newPatient['updated_by'])->first();
+
+                $newPatient['updated_by'] = $updatedByUser['first_name'].' '.$updatedByUser['last_name'];
+
+            } else{
+
+                $newPatient['updated_by'] = 'Not available';
+
+            }
+
+            $newPatient['clinic_name'] = $newPatient->assignedClinic->name;
+
+            unset($newPatient->assignedClinic);
+            
+            unset($newPatient->createdBy);
+
+            unset($newPatient->updatedBy);
+
+            $patientSuccess['result'] = 'success';
+
+            $patientSuccess['patient'] = $newPatient;
     
-            return response()->json('success', 200);                
+            return response()->json($patientSuccess, 200);                
 
         } catch (exception $e) { 
            
@@ -130,10 +188,6 @@ public function searchPatient(Request $request){
             })->where('clinic_id', $user['clinic_id'])->get();
 
             foreach($patientResult as $item){     
-                                   
-                unset($item->createdBy);
-
-                unset($item->updatedBy);
 
                 $createdByUser = $users::where('id', $item['created_by'])->first();
 
@@ -154,6 +208,10 @@ public function searchPatient(Request $request){
                 $item['clinic_name'] = $item->assignedClinic->name;
 
                 unset($item->assignedClinic);
+                
+                unset($item->createdBy);
+
+                unset($item->updatedBy);
 
             }
 
