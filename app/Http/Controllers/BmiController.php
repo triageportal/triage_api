@@ -35,12 +35,15 @@ class BmiController extends Controller
 
         try{
 
-            $existing_patient = Bmi::firstWhere('patient_id', $request['patient_id']);
+            $existing_record = Bmi::firstWhere('patient_id', $request['patient_id']);
 
-            if($existing_patient != null){
+            if($existing_record != null){
 
-                $existing_patient['status'] = 'existing record';
-                return response()->json($existing_patient, 200);
+                unset($existing_record['entered_by']);
+                unset($existing_record['edited_by']);
+          
+                $existing_record['status'] = 'existing record';
+                return response()->json($existing_record, 200);
 
             }
 
@@ -73,7 +76,7 @@ class BmiController extends Controller
             }
 
             //Calculating BMI here.
-            $calc_bmi = (double)$help -> calculateBmi((double)$final_height_cm, (double) $final_weight_kg);
+            $calc_bmi = $help -> calculateBmi((double)$final_height_cm, (double) $final_weight_kg);
 
             //Gets the user object, so that I can get user ID from here.
             $user = Auth::user();
