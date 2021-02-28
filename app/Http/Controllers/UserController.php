@@ -44,6 +44,7 @@ class UserController extends Controller
             $help = new HelperClass;  
             $request = $help -> sanitize($request->all());
             
+            //Based on the token, return the current user's object.
             $user = JWTAuth::parseToken()->toUser();
             
             if($user['access_type'] == 'admin' && $user['clinic_id'] == 0){
@@ -94,7 +95,7 @@ class UserController extends Controller
             'firstName' => 'required|max:50',
             'lastName' => 'required|max:50',
             'email' => 'required|unique:users|email|max:50',
-            'password' => "required|regex: /^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:32|min:8"                 
+            'password' => "required|regex: /^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[@!$#%]).*$/|max:32|min:8"                 
                 
         ]);
 
