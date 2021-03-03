@@ -84,41 +84,95 @@ class VitalsController extends Controller
 
     public function postVitals(Request $request){
 
-    $request -> validate([
+        $request -> validate([
 
-        'patient_id' => 'required|integer',
-        'height_cm' => 'required_with:weight_kg, bmi|regex:/^[0-9]+(\.[0-9][0-9])/',
-        'weight_kg' => 'required_with:height_cm, bmi|regex:/^[0-9]+(\.[0-9][0-9])/',
-        'bmi' => 'required_with:weight_kg, height_cm|regex:/^[0-9]+(\.[0-9][0-9])/',
-        'temp' => 'required_with:temp_unit|regex:/^[0-9]+(\.[0-9])/',
-        'temp_unit' => 'required_with:temp|in:c,f',
-        'pulse' => 'nullable|integer|max:500',
-        'resp_rate' => 'nullable|integer|max:200',
-        'bp_systolic' => 'required_with:bp_diastolic|integer|max:400',        
-        'bp_diastolic' => 'required_with:bp_systolic|integer|max:400'
-
-    ]);
-
-
-    $help = new HelperClass();
-    //Converting from F to C.
-    $final_temp_c = null;
+            'patient_id' => 'required|integer',
+            'height_cm' => 'required_with:weight_kg, bmi|regex:/^[0-9]+(\.[0-9][0-9])/',
+            'weight_kg' => 'required_with:height_cm, bmi|regex:/^[0-9]+(\.[0-9][0-9])/',
+            'bmi' => 'required_with:weight_kg, height_cm|regex:/^[0-9]+(\.[0-9][0-9])/',
+            'temp' => 'required_with:temp_unit|regex:/^[0-9]+(\.[0-9])/',
+            'temp_unit' => 'required_with:temp|in:c,f',
+            'pulse' => 'nullable|integer|max:500',
+            'resp_rate' => 'nullable|integer|max:200',
+            'bp_systolic' => 'required_with:bp_diastolic|integer|max:400',        
+            'bp_diastolic' => 'required_with:bp_systolic|integer|max:400'
     
-    if(strtolower($request['temp_unit']) == 'f'){
+        ]);
 
-        $final_temp_c = $help -> farToCel($request['temp']);
+        try{
 
-    }else if(strtolower($request['temp_unit']) == 'c'){
+            $help = new HelperClass();
+            $request =$help -> sanitize($request->all());
+            //Converting from F to C.
+            $final_temp_c = null;
+            
+            if(array_key_exists('temp', $request) && array_key_exists('temp_unit', $request)){
 
-        $final_temp_c = (double)number_format($request['temp'], 1);
+                if(strtolower($request['temp_unit']) == 'f'){
+        
+                    $final_temp_c = $help -> farToCel($request['temp']);
+            
+                }else if(strtolower($request['temp_unit']) == 'c'){
+            
+                    $final_temp_c = (double)number_format($request['temp'], 1);
+            
+                }            
 
-    }
+            }
+            
+            //Capturing user ID.
+            $user = Auth::user();  
+            $created_by = $user -> id;
+        
+            $vitals = new Vitals();
+        
+            $vitals -> patient_id = $request['patient_id'];
+            $vitals -> entered_by = $created_by;
 
-    //Capturing user ID.
-    $user = Auth::user();  
-    $created_by = $user -> id;
+            if(array_key_exists('bmi', $request)){
 
-    $vitals = new Vitals();
+                $vitals -> height_cm = $request['height_cm'];
+                $vitals -> weight_kg = $request['weight_kg'];
+                $vitals -> calculated_bmi = $request['bmi'];
+
+            }
+
+            if($final_temp_c != null){
+
+                $vitals -> temperature_c = $final_temp_c;
+
+            }
+
+            if(array_key_exists('pulse', $request)){
+
+                $vitals -> pulse = $request['pulse']; 
+
+            }
+
+            if(array_key_exists('resp_rate', $request)){
+
+                $vitals -> respiratory_rate = $request['resp_rate']; 
+
+            }
+
+            if(array_key_exists('bp_systolic', $request)){
+
+                $vitals -> bp_systolic = $request['bp_systolic']; 
+                $vitals -> bp_diastolic = $request['bp_diastolic']; 
+
+            }
+            
+            $vitals -> save();
+        
+        
+            return response()->json('success', 200);
+
+        } catch(exception $e){
+
+            //return response()->json('error', 500);
+            return $e;
+
+        }
 
     }
 }
