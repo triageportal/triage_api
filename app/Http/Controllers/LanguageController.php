@@ -24,7 +24,8 @@ class LanguageController extends Controller
 
             $selectLanguage = $request['language'];
                    
-            $languageFile = file_get_contents(base_path('\\language_packs\\'.$selectLanguage.'.json'));
+           // $languageFile = file_get_contents(base_path('\\language_packs\\'.$selectLanguage.'.json'));
+           $languageFile = file_get_contents('/home/startnga/backend_laravel/language_packs/'.$selectLanguage.'.json');
             
             return  $languageFile;
 

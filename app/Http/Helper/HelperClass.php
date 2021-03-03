@@ -5,6 +5,15 @@ namespace App\Http\Helper;
 class HelperClass 
 {
 
+    public function farToCel($input){
+
+        //T(°C) = (T(°F) - 32) × 5/9
+        (double)$cel = ((double)$input - 32)*(5/9);
+
+        return (double)number_format($cel, 1);
+
+    }
+
     public function calculateBmi($height_cm, $weight_kg){
 
         //(weight kg / height cm / height cm ) x 10,000 = bmi

@@ -90,5 +90,7 @@ Route::middleware('auth:api')->post('/patientdata', 'PatientController@createPat
 //Search for a patient.
 Route::middleware('auth:api')->get('/patientdata', 'PatientController@searchPatient');
 
-//BMI routes.
-Route::middleware('auth:api')->post('/bmi', 'BmiController@postBmi');
+//Vitals routes.
+Route::middleware('auth:api')->post('/calc_bmi', 'Vitals\VitalsController@calcBmi');
+
+Route::middleware('auth:api')->post('/vitals', 'Vitals\VitalsController@postVitals');

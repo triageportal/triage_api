@@ -239,7 +239,26 @@ public function searchPatient(Request $request){
 
 }
 
-
+public function getPatient($id){	
+    $help = new HelperClass();	
+    $patientId = $help->sanitize($id);	
+    $patient = new Patient();	
+    	
+    try {	
+        	
+        $patientResult =  $patient::where('id', $patientId)->firstOrFail();	
+        return response()->json($patientResult, '200');	
+        	
+    } catch (exception $e) {	
+        	
+        //"php artisan config:clear" to reload changes in .env file.             	
+        if(app()->environment() == 'dev'){	
+                return $e;	
+        }else{	
+                return response()->json('error', 500);	
+        } 	
+    }	
+}
 
 
 }
