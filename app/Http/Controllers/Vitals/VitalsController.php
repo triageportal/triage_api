@@ -175,4 +175,30 @@ class VitalsController extends Controller
         }
 
     }
+
+    public function getVitals(Request $request){
+
+        $request -> validate([
+
+            'patient_id' => 'required|integer'
+
+        ]);
+
+        try{
+
+            $help = new HelperClass();
+            $request =$help -> sanitize($request->all());
+
+            $vitals = new Vitals();
+
+            $last_record = $vitals -> latest('')->first();
+
+
+        } catch(exception $e){
+
+
+
+        }
+
+    }
 }
