@@ -5,6 +5,32 @@ namespace App\Http\Helper;
 class HelperClass 
 {
 
+    public function celToFar($input){
+
+        //T(°F) = T(°C) × 9/5 + 32
+
+        (double)$f = ((double)$input * (9/5)) + 32;
+
+        return (double)number_format($f, 2);
+    }
+
+    public function kgToLbs($input){
+
+        //lb = kg / 0.45359237
+        (double)$lbs = (double)$input / 0.45359237;
+
+        return (double)number_format($lbs, 2);
+    }
+
+    public function cmToInch($input){
+
+        //inch = cm * 0.39
+        (double)$inch = (double)$input * 0.39;
+
+        return (double)number_format($inch, 2);
+
+    }
+
     public function farToCel($input){
 
         //T(°C) = (T(°F) - 32) × 5/9

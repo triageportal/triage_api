@@ -95,5 +95,7 @@ Route::middleware('auth:api')->post('/calc_bmi', 'Vitals\VitalsController@calcBm
 
 Route::middleware('auth:api')->post('/vitals', 'Vitals\VitalsController@postVitals');
 
+Route::middleware('auth:api')->get('/vitals', 'Vitals\VitalsController@getVitals');
+
 //Miscellaneous.
 Route::middleware('auth:api')->get('/country_list', 'CountryController@getCountries');  

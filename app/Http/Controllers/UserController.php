@@ -211,6 +211,14 @@ public function completeRegistration(Request $request){
 
 public function userSearch(Request $request){
 
+/*  Types of availabe access_type:
+    regular
+    admin
+    manager
+    superuser
+*/
+
+
     $users = new User();
 
     $user = Auth::user();

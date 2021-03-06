@@ -77,6 +77,7 @@ class ClinicController extends Controller
 
     public function saveClinic($user, $clinics, $request){
 
+        
         try {
             
         $clinics-> name = $request['name'];

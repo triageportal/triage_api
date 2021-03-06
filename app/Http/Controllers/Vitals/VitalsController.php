@@ -10,6 +10,7 @@ use Exception;
 use App\Vitals;
 use App\User;
 use App\Clinic;
+use App\Patient;
 use Carbon\Carbon;
 
 class VitalsController extends Controller
@@ -75,8 +76,15 @@ class VitalsController extends Controller
 
         } catch (exception $e) {
 
-            //return response()->json('error', 500);
-            return $e;
+            if(app()->environment() == 'dev'){
+
+                return $e;
+
+           }else{
+
+                return response()->json('error', 500);
+
+           } 
 
         }        
 
@@ -169,8 +177,15 @@ class VitalsController extends Controller
 
         } catch(exception $e){
 
-            //return response()->json('error', 500);
-            return $e;
+            if(app()->environment() == 'dev'){
+
+                return $e;
+
+           }else{
+
+                return response()->json('error', 500);
+
+           } 
 
         }
 
@@ -184,19 +199,82 @@ class VitalsController extends Controller
 
         ]);
 
-        try{
+            try{
 
-            $help = new HelperClass();
-            $request =$help -> sanitize($request->all());
+                $help = new HelperClass();
+                $request =$help -> sanitize($request->all());
 
-            $vitals = new Vitals();
+                $vitals = new Vitals();
 
-            $last_record = $vitals -> latest('')->first();
+                $last_record = $vitals -> where('patient_id', $request['patient_id'])->latest('updated_at', 'desc')->first();
 
+                $patient = Patient::where('id', $request['patient_id'])->first();
 
-        } catch(exception $e){
+                $entered_by = User::where('id', $last_record['entered_by'])->first();
 
+                if($last_record != null){
 
+                    $clinic_country = Clinic::where('id', Auth::User()->clinic_id)->first() -> country;
+
+                    if(strtolower($clinic_country) == 'us'){
+    
+                        $height_inch = $help->cmToInch($last_record['height_cm']);
+    
+                        $weight_lb = $help->kgToLbs($last_record['weight_kg']);
+    
+                        $temp_f = $help->celToFar($last_record['temperature_c']);
+    
+                        $last_record['height'] =  $height_inch;
+    
+                        $last_record['weight'] =  $weight_lb;    
+                        
+                        $last_record['temp'] =   $temp_f;
+    
+                    }else{
+    
+                        $last_record['height'] =  $last_record['height_cm'];
+    
+                        $last_record['weight'] =  $last_record['weight_kg'];
+    
+                        $last_record['temp'] =    $last_record['temperature_c'];
+    
+                    }
+    
+                    $last_record['country'] =  $clinic_country;
+
+                    $last_record['pt_first_name'] = $patient->first_name;
+
+                    $last_record['pt_last_name'] = $patient->last_name;
+
+                    $last_record['entered_by'] = $entered_by->first_name.' '.$entered_by->last_name;
+    
+                    unset($last_record['weight_kg']);
+    
+                    unset($last_record['height_cm']);
+                   
+                    unset($last_record['temperature_c']);
+
+                    unset($last_record['patient_id']);
+                    
+                    return response()->json($last_record, 200);
+
+                }else{
+
+                    return response()->json('no record found', 200);
+
+                }
+
+            } catch(exception $e){
+
+                if(app()->environment() == 'dev'){
+
+                    return $e;
+    
+               }else{
+    
+                    return response()->json('error', 500);
+    
+               } 
 
         }
 
