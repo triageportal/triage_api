@@ -206,7 +206,7 @@ class VitalsController extends Controller
 
                 $vitals = new Vitals();
 
-                $last_record = $vitals -> where('patient_id', $request['patient_id'])->latest('updated_at', 'desc')->first();
+                $last_record = $vitals -> where('patient_id', $request['patient_id'])->latest('created_at', 'desc')->first();
 
                 $patient = Patient::where('id', $request['patient_id'])->first();
 

@@ -152,6 +152,8 @@ public function clinicSearch(Request $request){
 
                 $country_name = Country::where('code', $country_code)->first()->eng;
 
+                $item['country_code'] = $country_code;
+                
                 $item['country'] = $country_name;
 
                 if( $item['created_by'] != null){
@@ -198,6 +200,8 @@ public function clinicSearch(Request $request){
                 $country_code = $item['country'];
 
                 $country_name = Country::where('code', $country_code)->first()->eng;
+
+                $item['country_code'] = $country_code;
 
                 $item['country'] = $country_name;
 
