@@ -12,6 +12,7 @@ use App\Mail\SendLink;
 use Exception;
 use App\Http\Controllers\UserController;
 use App\Http\Helper\HelperClass;
+use App\Country;
 
 class ClinicController extends Controller
 {
@@ -147,6 +148,12 @@ public function clinicSearch(Request $request){
             //Replacing updated_by id with the user name.
             foreach($clinicsResult as $item){
 
+                $country_code = $item['country'];
+
+                $country_name = Country::where('code', $country_code)->first()->eng;
+
+                $item['country'] = $country_name;
+
                 if( $item['created_by'] != null){
 
                     $clinics = new Clinic();
@@ -187,6 +194,12 @@ public function clinicSearch(Request $request){
             //Replacing created_by id with the user name.
             //Replacing updated_by id with the user name.
             foreach($clinicsResult as $item){
+
+                $country_code = $item['country'];
+
+                $country_name = Country::where('code', $country_code)->first()->eng;
+
+                $item['country'] = $country_name;
 
                 if($item['created_by'] != null){
            
