@@ -45,7 +45,7 @@ class VitalsController extends Controller
             //if in KG, no conversion needed. Value goes to the DB as DOUBLE.
             if($request['weight_unit'] == 'kg'){
 
-                $final_weight_kg = (double)$request['weight'];
+                $final_weight_kg = $request['weight'];
 
             //If in LB, I convert the value to KG, then write to DB.    
             }else if($request['weight_unit'] == 'lb'){
@@ -56,7 +56,7 @@ class VitalsController extends Controller
             //if in CM, no conversion needed. Value goes to the DB as DOUBLE.
             if($request['height_unit'] == 'cm'){
 
-                $final_height_cm = (double)$request['height'];
+                $final_height_cm = $request['height'];
 
             //If in INCH, I convert the value to CM, then write to DB.
             }else if($request['height_unit'] == 'inch'){

@@ -11,7 +11,7 @@ class HelperClass
 
         (double)$f = ((double)$input * (9/5)) + 32;
 
-        return (double)number_format($f, 2);
+        return number_format($f, 2);
     }
 
     public function kgToLbs($input){
@@ -19,7 +19,7 @@ class HelperClass
         //lb = kg / 0.45359237
         (double)$lbs = (double)$input / 0.45359237;
 
-        return (double)number_format($lbs, 2);
+        return number_format($lbs, 2);
     }
 
     public function cmToInch($input){
@@ -27,7 +27,7 @@ class HelperClass
         //inch = cm * 0.39
         (double)$inch = (double)$input * 0.39;
 
-        return (double)number_format($inch, 2);
+        return number_format($inch, 2);
 
     }
 
@@ -36,7 +36,7 @@ class HelperClass
         //T(°C) = (T(°F) - 32) × 5/9
         (double)$cel = ((double)$input - 32)*(5/9);
 
-        return (double)number_format($cel, 1);
+        return number_format($cel, 1);
 
     }
 
@@ -47,7 +47,7 @@ class HelperClass
         $bmi = (($weight_kg / $height_cm) / $height_cm) * 10000;
 
         //keeps only 2 decimal points.
-        return (double)number_format($bmi, 2);
+        return number_format($bmi, 2);
 
     }
 
@@ -58,7 +58,7 @@ class HelperClass
         $total_cm = (double)$inch_value * $cm_equivalent;
 
         //keeps only 2 decimal points.
-        return (double)number_format($total_cm, 2);
+        return number_format($total_cm, 2);
 
     }
 
@@ -68,7 +68,7 @@ class HelperClass
 
         $total_kg = (double)$lb_value * $kg_equivalent;
 
-        return (double)number_format($total_kg, 2);
+        return number_format($total_kg, 2);
 
     }
 
