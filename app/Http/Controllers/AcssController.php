@@ -6,6 +6,7 @@ use Exception;
 use App\Http\Controllers\Objects\AcssObject;
 use App\triage\acss\Category;
 use Illuminate\Http\Request;
+use App\Http\Helper\HelperClass;
 
 class AcssController extends Controller
 {
@@ -19,18 +20,34 @@ class AcssController extends Controller
 
         $request->validate([
 
-            'language'=>'required|max:3'
+            'language'=>'required|max:3',
+            'form' => 'required'
 
         ]);
 
+        $help = new HelperClass;
+        $request =$help -> sanitize($request->all());
+
            try{
 
-            $query = 'SELECT cat.? AS category, quest.id AS question_id, quest.? AS question_text, 
-            resp.id AS response_id, resp.? AS response_text, resp.value AS response_value FROM acss_category
-             AS cat INNER JOIN acss_questions AS quest ON cat.id = quest.category_id INNER JOIN acss_quest_resp_lk 
-             AS lk ON quest.id = lk.question_id INNER JOIN acss_response AS resp ON lk.response_id = resp.id';
+            $query ='';
 
-            $query = str_replace('?', $request['language'], $query);
+            switch ($request['form']) {
+                case "acss":
+
+                    $query = 'SELECT cat.? AS category, quest.id AS question_id, quest.? AS question_text, 
+                    resp.id AS response_id, resp.? AS response_text, resp.value AS response_value 
+                    FROM acss_category AS cat 
+                    INNER JOIN acss_questions AS quest ON cat.id = quest.category_id 
+                    INNER JOIN acss_quest_resp_lk  AS lk ON quest.id = lk.question_id 
+                    INNER JOIN acss_response AS resp ON lk.response_id = resp.id';
+
+                    $query = str_replace('?', $request['language'], $query);
+
+                  break;
+                default:
+                return response()->json('unable to find requested diagnostics form.', 500);
+              }  
 
             $db_result = (array)DB::select($query);
 
@@ -79,7 +96,7 @@ class AcssController extends Controller
 
                 }
 
-                $cats[$i]['questions'] = $questions;     
+                $cats[$i]['questions'] = $questions;    
 
             }
 
@@ -116,15 +133,16 @@ class AcssController extends Controller
             return response()->json($cats, 200);
 
            }catch(Exception $e){
-            if(app()->environment() == 'dev'){
 
-                return $e;
+                if(app()->environment() == 'dev'){
 
-           }else{
+                    return $e;
 
-                return response()->json('error', 500);
+                }else{
 
-           }
+                    return response()->json('error', 500);
+
+                }
 
            }
             
