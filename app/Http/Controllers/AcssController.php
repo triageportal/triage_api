@@ -16,7 +16,7 @@ class AcssController extends Controller
         
     }
 
-    public function getAcssForm(Request $request){
+    public function getForm(Request $request){
 
         $request->validate([
 
