@@ -98,4 +98,7 @@ Route::middleware('auth:api')->post('/vitals', 'Vitals\VitalsController@postVita
 Route::middleware('auth:api')->get('/vitals', 'Vitals\VitalsController@getVitals');
 
 //Miscellaneous.
-Route::middleware('auth:api')->get('/country_list', 'CountryController@getCountries');  
+Route::middleware('auth:api')->get('/country_list', 'CountryController@getCountries');
+
+//ACSS.
+Route::middleware('auth:api')->get('/acss_form', 'AcssCOntroller@getAcssForm');
