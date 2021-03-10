@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
-
+use Exception;
+use App\Http\Controllers\Objects\AcssObject;
+use App\triage\acss\Category;
 use Illuminate\Http\Request;
 
 class AcssController extends Controller
@@ -21,69 +23,112 @@ class AcssController extends Controller
 
         ]);
 
-        $result = [];
-        
-        $language = $request['language'];
-        $categories_result = (array)DB::select('SELECT id, '.$language.' FROM acss_category');
+           try{
 
-        foreach($categories_result as $item){ 
-            
-            $item = (array)$item;
-            
-            $category = [];
-            $questions = [];
-            $responses = [];
+            $query = 'SELECT cat.? AS category, quest.id AS question_id, quest.? AS question_text, 
+            resp.id AS response_id, resp.? AS response_text, resp.value AS response_value FROM acss_category
+             AS cat INNER JOIN acss_questions AS quest ON cat.id = quest.category_id INNER JOIN acss_quest_resp_lk 
+             AS lk ON quest.id = lk.question_id INNER JOIN acss_response AS resp ON lk.response_id = resp.id';
 
-            $category['category'] = $item[$language];
+            $query = str_replace('?', $request['language'], $query);
 
-            $question_result = (array)DB::select('SELECT id, '.$language.' FROM acss_questions WHERE category_id = ?', [$item['id']]);           
+            $db_result = (array)DB::select($query);
 
-                foreach($question_result as $question){
+            $cats = [];            
 
-                    $question = (array)$question;
+            $duplicate_cats = [];
 
-                    $loop_questions = [];
+            foreach($db_result as $result){
 
-                    $loop_questions['question_id'] = $question['id'];
+                $result = (array)$result;               
 
-                    $loop_questions['question_text'] = $question[$language];                    
+                if(!in_array($result['category'], $duplicate_cats)){
 
-                    $response_lk = (array)DB::select('SELECT response_id FROM acss_quest_resp_lk WHERE question_id = '.$question['id']);
+                    array_push($duplicate_cats, $result['category']);
+                    $template = new AcssObject;
+                    $cat_template = $template->category;
+                    $cat_template['category'] = $result['category'];                    
+                    array_push($cats,  $cat_template);
 
-                    foreach($response_lk as $lk){
-                        
-                        $lk = (array)$lk;
+                }
 
-                        $response_result = (array)DB::select('SELECT value, '.$language.' FROM acss_response WHERE id = '.$lk['response_id']);
+            }
 
-                        foreach($response_result as $response){
+            for($i=0; $i<sizeof($cats); $i++){
 
-                            $response = (array)$response;
+                $category = $cats[$i];
 
-                            $response_loop = [];
+                $duplicate_quest = [];
 
-                            $response_loop['response_text'] = $response[$language];
-                            $response_loop['value'] = $response['value'];
+                $questions = [];
 
-                            array_push($responses, $response_loop); 
+                foreach($db_result as $result){
 
+                    $result = (array)$result; 
+
+                    if($result['category'] == $category['category'] && !in_array($result['question_text'], $duplicate_quest)){
+
+                        array_push($duplicate_quest, $result['question_text']);
+                        $template = new AcssObject;
+                        $quest_template = $template->questions;
+                        $quest_template['question_text'] = $result['question_text'];
+                        $quest_template['question_id'] = $result['question_id'];
+                        array_push($questions, $quest_template);
+
+                    }
+
+                }
+
+                $cats[$i]['questions'] = $questions;     
+
+            }
+
+            for($i=0; $i<sizeof($cats); $i++){
+
+                $questions = $cats[$i]['questions'];
+
+                for($j=0; $j<sizeof($questions); $j++){
+
+                    $question_text = $questions[$j]['question_text'];             
+                   
+                    foreach($db_result as $result){
+
+                        $result = (array)$result; 
+
+                        if($question_text == $result['question_text']){
+
+                            $template = new AcssObject;
+                            $resp_template = $template->responses;
+                            $resp_template['response_id'] = $result['response_id'];
+                            $resp_template['response_text'] = $result['response_text'];
+                            $resp_template['response_value'] = $result['response_value'];
+                            array_push($questions[$j]['responses'], $resp_template);   
+                            
                         }
 
                     }
-                    $loop_questions['responses'] = $responses; 
-                    $responses = [];                   
-                    array_push($questions, $loop_questions);
 
                 }
+
+                $cats[$i]['questions'] = $questions;
+            }
             
-            $category['questions']=$questions;
-            array_push($result, $category);
-        }
-        
+            return response()->json($cats, 200);
 
-        return response()->json($result, 200);
+           }catch(Exception $e){
+            if(app()->environment() == 'dev'){
 
-       
+                return $e;
+
+           }else{
+
+                return response()->json('error', 500);
+
+           }
+
+           }
+            
+            
 
     }
 }

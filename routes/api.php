@@ -101,4 +101,4 @@ Route::middleware('auth:api')->get('/vitals', 'Vitals\VitalsController@getVitals
 Route::middleware('auth:api')->get('/country_list', 'CountryController@getCountries');
 
 //ACSS.
-Route::middleware('auth:api')->get('/acss_form', 'AcssCOntroller@getAcssForm');
+Route::middleware('auth:api')->get('/acss_form', 'AcssController@getAcssForm');
