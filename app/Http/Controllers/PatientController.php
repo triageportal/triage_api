@@ -60,7 +60,7 @@ class PatientController extends Controller
 
                     if($user['clinic_id'] == $item['clinic_id']){
 
-                        //Replacing created_by and updated_by ids with actua;l user names.
+                        //Replacing created_by and updated_by ids with actual user names.
                         $createdByUser = $users::where('id', $item['created_by'])->first();
 
                         $item['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
@@ -182,14 +182,59 @@ public function searchPatient(Request $request){
 
     $user = Auth::user();
 
-        try {
-            
-            $patientResult =  $patient::where(function($query) use($request){
+/*
+search by last name: , lastname
+search by first name: firstname
+search by full name: firstname,lastname
+*/
 
-                $query->where('first_name', 'like', '%'.$request['keyword'].'%')->
-                orWhere('last_name', 'like', '%'.$request['keyword'].'%');
-        
-            })->where('clinic_id', $user['clinic_id'])->get();
+        $search_keyword = explode(',', $request['keyword']);
+
+        try {
+
+            $patientResult = null;
+
+            if(sizeof($search_keyword) == 1){
+
+                //format: searchkeyword
+                $patientResult =  $patient::where('first_name', 'like', '%'.$request['keyword'].'%')->where('clinic_id', $user['clinic_id'])->get();
+            
+            }else if(sizeof($search_keyword) == 2 && strlen(str_replace(' ', '', $search_keyword[0])) > 0 && strlen(str_replace(' ', '', $search_keyword[1])) > 0){
+
+                //format: firstname, lastname
+                $search_first_name = str_replace(' ', '', $search_keyword[0]);
+                $search_last_name = str_replace(' ', '', $search_keyword[1]);
+
+                $patientResult =  $patient::where(function($query) use($search_first_name, $search_last_name){
+
+                    $query->where('first_name', 'like', '%'.$search_first_name.'%')->
+                    orWhere('last_name', 'like', '%'.$search_last_name.'%');
+            
+                })->where('clinic_id', $user['clinic_id'])->get();
+
+            }else if(sizeof($search_keyword) == 2 && strlen(str_replace(' ', '', $search_keyword[0])) == 0 && strlen(str_replace(' ', '', $search_keyword[1])) > 0){
+
+                //format: , lastname
+                $search_last_name = str_replace(' ', '', $search_keyword[1]);
+                $patientResult =  $patient::where('last_name', 'like', '%'.$search_last_name.'%')->where('clinic_id', $user['clinic_id'])->get();
+
+            }else if(sizeof($search_keyword) == 2 && strlen(str_replace(' ', '', $search_keyword[0])) > 0 && strlen(str_replace(' ', '', $search_keyword[1])) == 0){
+
+                //format: , lastname
+                $search_first_name = str_replace(' ', '', $search_keyword[0]);
+                $patientResult =  $patient::where('first_name', 'like', '%'.$search_first_name.'%')->where('clinic_id', $user['clinic_id'])->get();
+
+            }else{
+
+                $patientResult =  $patient::where(function($query) use($request){
+
+                    $query->where('first_name', 'like', '%'.$request['keyword'].'%')->
+                    orWhere('last_name', 'like', '%'.$request['keyword'].'%');
+            
+                })->where('clinic_id', $user['clinic_id'])->get();
+
+            }
+
 
             foreach($patientResult as $item){     
 

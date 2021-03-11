@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Objects;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AcssObject extends Controller
+class QuestionnaireObj extends Controller
 {
     public $category = [
 

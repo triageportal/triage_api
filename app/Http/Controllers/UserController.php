@@ -162,7 +162,7 @@ public function completeRegistration(Request $request){
 
     $request-> validate([
         'registrationHash' => 'required',
-        'password' => "required|regex: /^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|max:32|min:8"  
+        'password' => "required|regex: /^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[@!$#%]).*$/|max:32|min:8"  
     ]);
 
     $help = new HelperClass;  
