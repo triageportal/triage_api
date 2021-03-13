@@ -63,16 +63,17 @@ class FormsController extends Controller
                     array_push($duplicate_cats, $result['category']);
                     $template = new QuestionnaireObj;
                     $cat_template = $template->category;
-                    $cat_template['category'] = $result['category'];                    
-                    array_push($cats,  $cat_template);
-
+                    $cat_template['category'] = $result['category'];
+                    $key = str_replace(' ', '_', $result['category']);                    
+                    $cats[$key] = $cat_template;
+                    //array_push($cats,  $cat_template);
                 }
 
             }
 
-            for($i=0; $i<sizeof($cats); $i++){
+            foreach($cats as $key => $this_cat){
 
-                $category = $cats[$i];
+                $category = $this_cat;
 
                 $duplicate_quest = [];
 
@@ -95,13 +96,13 @@ class FormsController extends Controller
 
                 }
 
-                $cats[$i]['questions'] = $questions;    
+                $cats[$key]['questions'] = $questions;    
 
             }
 
-            for($i=0; $i<sizeof($cats); $i++){
+            foreach($cats as $key => $this_cat){
 
-                $questions = $cats[$i]['questions'];
+                $questions = $cats[$key]['questions'];
 
                 for($j=0; $j<sizeof($questions); $j++){
 
@@ -126,7 +127,7 @@ class FormsController extends Controller
 
                 }
 
-                $cats[$i]['questions'] = $questions;
+                $cats[$key]['questions'] = $questions;
             }
             
             return response()->json($cats, 200);
