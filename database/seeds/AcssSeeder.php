@@ -163,8 +163,8 @@ class AcssSeeder extends Seeder
             ['category_id' => 2,'id' => 8,'eng' => 'Abnormal vaginal discharge (amount, color and/or odor)'],
             ['category_id' => 2,'id' => 9,'eng' => 'Discharge from the urethra (urinary opening) , without urination'],
             ['category_id' => 2,'id' => 10,'eng' => 'Fever/high body temperature (Please indicate if measured)'],
-            ['category_id' => 3,'id' => 11,'eng' => 'Please indicate how your symptoms have interfered with your everyday activities/work in the past 24 hours (Mark only 
-            one answer that suits you best)'],
+            ['category_id' => 3,'id' => 11,'eng' => 'Please indicate how much discomfort you have experienced because of your symptoms in the past 24 hours (Mark 
+            only one answer that suits you best)'],
             ['category_id' => 3,'id' => 12,'eng' => 'Please indicate how your symptoms have interfered with your everyday activities/work in the past 24 hours (Mark only 
             one answer that suits you best)'],
             ['category_id' => 3,'id' => 13,'eng' => 'Please indicate how your symptoms have interfered with your social activities (visiting people, meeting with friends, 
