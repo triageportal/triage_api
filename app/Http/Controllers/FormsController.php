@@ -44,6 +44,20 @@ class FormsController extends Controller
                     $query = str_replace('?', $request['language'], $query);
 
                   break;
+
+                case "demographics":
+
+                    $query = 'SELECT cat.? AS category, quest.id AS question_id, quest.? AS question_text, 
+                            resp.id AS response_id, resp.? AS response_text, resp.value AS response_value 
+                            FROM demographics_category AS cat 
+                            INNER JOIN demographics_questions AS quest ON cat.id = quest.category_id 
+                            INNER JOIN demographics_question_response_lk  AS lk ON quest.id = lk.question_id 
+                            INNER JOIN demographics_response AS resp ON lk.response_id = resp.id';
+
+                    $query = str_replace('?', $request['language'], $query);
+
+                  break;
+
                 default:
                 return response()->json('unable to find requested diagnostics form.', 500);
               }  

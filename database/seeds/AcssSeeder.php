@@ -94,7 +94,9 @@ class AcssSeeder extends Seeder
             ['question_id' => 19, 'response_id' => 28],
             ['question_id' => 19, 'response_id' => 29],
             ['question_id' => 19, 'response_id' => 30],
-            ['question_id' => 19, 'response_id' => 31]
+            ['question_id' => 19, 'response_id' => 31],
+            ['question_id' => 20, 'response_id' => 32],
+            ['question_id' => 20, 'response_id' => 33]
 
         ];
 
@@ -138,7 +140,9 @@ class AcssSeeder extends Seeder
             ['id' => 28,'value' => 1, 'eng' => 'Yes, I feel much better (Most of symptoms have gone away)'],
             ['id' => 29,'value' => 2, 'eng' => 'Yes, I feel somewhat better (Only some symptoms are gone)'],
             ['id' => 30,'value' => 3, 'eng' => 'No, there are barely any changes (I still have about the same symptoms)'],
-            ['id' => 31,'value' => 4, 'eng' => 'Yes, I feel worse (My condition is worse)']
+            ['id' => 31,'value' => 4, 'eng' => 'Yes, I feel worse (My condition is worse)'],
+            ['id' => 32,'value' => 0, 'eng' => 'Initial'],
+            ['id' => 33,'value' => 1, 'eng' => 'Follow up']
 
         ];
 
@@ -174,8 +178,8 @@ class AcssSeeder extends Seeder
             ['category_id' => 4,'id' => 16,'eng' => 'Signs of menopausal syndrome (e.g. hot flashes) ?'],
             ['category_id' => 4,'id' => 17,'eng' => 'Pregnancy'],
             ['category_id' => 4,'id' => 18,'eng' => 'Known (diagnosed) diabetes mellitus (high sugar)'],
-            ['category_id' => 5,'id' => 19,'eng' => 'Please indicate if you experienced any changes in your symptoms since the first time you completed this questionnaire:']          
-
+            ['category_id' => 5,'id' => 19,'eng' => 'Please indicate if you experienced any changes in your symptoms since the first time you completed this questionnaire:'],          
+            ['category_id' => 6,'id' => 20,'eng' => 'Please indicate visit type']
         ];
 
         Questions::insert($questions);
@@ -192,7 +196,9 @@ class AcssSeeder extends Seeder
             ['id'=> 2,'eng' => 'Differential'],
             ['id'=> 3,'eng' => 'Quality of life'],
             ['id'=> 4,'eng' => 'Additional'],
-            ['id'=> 5,'eng' => 'Dynamics']
+            ['id'=> 5,'eng' => 'Dynamics'],
+            ['id'=> 6,'eng' => 'Visit Type']
+
         ];
 
         Category::insert($categories);
