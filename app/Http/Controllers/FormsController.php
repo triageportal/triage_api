@@ -80,7 +80,6 @@ class FormsController extends Controller
                     $cat_template['category'] = $result['category'];
                     $key = str_replace(' ', '_', $result['category']);
                     $cat_template['category_id'] = $result['category_id'];
-                    $cat_template['category_id'] = $result['category_id'];
                     $cats[$key] = $cat_template;
 
                 }
