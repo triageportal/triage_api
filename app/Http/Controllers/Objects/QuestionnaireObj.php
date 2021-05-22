@@ -10,6 +10,7 @@ class QuestionnaireObj extends Controller
     public $category = [
 
         'category' => "",
+        'category_id' => '',
         'questions' => []
     ];
 

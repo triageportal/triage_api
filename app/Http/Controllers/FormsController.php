@@ -11,8 +11,8 @@ class FormsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:api'], ['except' => []]);       
-        
+        $this->middleware(['auth:api'], ['except' => []]);
+
     }
 
     public function getForm(Request $request){
@@ -34,11 +34,11 @@ class FormsController extends Controller
             switch ($request['form']) {
                 case "acss":
 
-                    $query = 'SELECT cat.? AS category, quest.id AS question_id, quest.? AS question_text, 
-                            resp.id AS response_id, resp.? AS response_text, resp.value AS response_value 
-                            FROM acss_category AS cat 
-                            INNER JOIN acss_questions AS quest ON cat.id = quest.category_id 
-                            INNER JOIN acss_quest_resp_lk  AS lk ON quest.id = lk.question_id 
+                    $query = 'SELECT cat.? AS category, cat.id AS category_id, quest.id AS question_id, quest.? AS question_text,
+                            resp.id AS response_id, resp.? AS response_text, resp.value AS response_value
+                            FROM acss_category AS cat
+                            INNER JOIN acss_questions AS quest ON cat.id = quest.category_id
+                            INNER JOIN acss_quest_resp_lk  AS lk ON quest.id = lk.question_id
                             INNER JOIN acss_response AS resp ON lk.response_id = resp.id';
 
                     $query = str_replace('?', $request['language'], $query);
@@ -47,11 +47,11 @@ class FormsController extends Controller
 
                 case "demographics":
 
-                    $query = 'SELECT cat.? AS category, quest.id AS question_id, quest.? AS question_text, 
-                            resp.id AS response_id, resp.? AS response_text, resp.value AS response_value 
-                            FROM demographics_category AS cat 
-                            INNER JOIN demographics_questions AS quest ON cat.id = quest.category_id 
-                            INNER JOIN demographics_question_response_lk  AS lk ON quest.id = lk.question_id 
+                    $query = 'SELECT cat.? AS category, cat.id AS category_id, quest.id AS question_id, quest.? AS question_text,
+                            resp.id AS response_id, resp.? AS response_text, resp.value AS response_value
+                            FROM demographics_category AS cat
+                            INNER JOIN demographics_questions AS quest ON cat.id = quest.category_id
+                            INNER JOIN demographics_question_response_lk  AS lk ON quest.id = lk.question_id
                             INNER JOIN demographics_response AS resp ON lk.response_id = resp.id';
 
                     $query = str_replace('?', $request['language'], $query);
@@ -60,17 +60,17 @@ class FormsController extends Controller
 
                 default:
                 return response()->json('unable to find requested diagnostics form.', 500);
-              }  
+              }
 
             $db_result = (array)DB::select($query);
 
-            $cats = [];            
+            $cats = [];
 
             $duplicate_cats = [];
 
             foreach($db_result as $result){
 
-                $result = (array)$result;               
+                $result = (array)$result;
 
                 if(!in_array($result['category'], $duplicate_cats)){
 
@@ -78,8 +78,11 @@ class FormsController extends Controller
                     $template = new QuestionnaireObj;
                     $cat_template = $template->category;
                     $cat_template['category'] = $result['category'];
-                    $key = str_replace(' ', '_', $result['category']);                    
-                    $cats[$key] = $cat_template;                
+                    $key = str_replace(' ', '_', $result['category']);
+                    $cat_template['category_id'] = $result['category_id'];
+                    $cat_template['category_id'] = $result['category_id'];
+                    $cats[$key] = $cat_template;
+
                 }
 
             }
@@ -94,7 +97,7 @@ class FormsController extends Controller
 
                 foreach($db_result as $result){
 
-                    $result = (array)$result; 
+                    $result = (array)$result;
 
                     if($result['category'] == $category['category'] && !in_array($result['question_text'], $duplicate_quest)){
 
@@ -109,7 +112,7 @@ class FormsController extends Controller
 
                 }
 
-                $cats[$key]['questions'] = $questions;    
+                $cats[$key]['questions'] = $questions;
 
             }
 
@@ -119,11 +122,11 @@ class FormsController extends Controller
 
                 for($j=0; $j<sizeof($questions); $j++){
 
-                    $question_text = $questions[$j]['question_text'];             
-                   
+                    $question_text = $questions[$j]['question_text'];
+
                     foreach($db_result as $result){
 
-                        $result = (array)$result; 
+                        $result = (array)$result;
 
                         if($question_text == $result['question_text']){
 
@@ -132,8 +135,8 @@ class FormsController extends Controller
                             $resp_template['response_id'] = $result['response_id'];
                             $resp_template['response_text'] = $result['response_text'];
                             $resp_template['response_value'] = $result['response_value'];
-                            array_push($questions[$j]['responses'], $resp_template);   
-                            
+                            array_push($questions[$j]['responses'], $resp_template);
+
                         }
 
                     }
@@ -142,7 +145,7 @@ class FormsController extends Controller
 
                 $cats[$key]['questions'] = $questions;
             }
-            
+
             return response()->json($cats, 200);
 
            }catch(Exception $e){
@@ -158,8 +161,8 @@ class FormsController extends Controller
                 }
 
            }
-            
-            
+
+
 
     }
 }
