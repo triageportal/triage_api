@@ -30,11 +30,11 @@ Route::group([
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me'); 
+    Route::post('me', 'AuthController@me');
 
 });
 
-//Used to create the first ADMIN user. Admin user is the IT Admin, who can create SUPERUSER, MANAGER and REGULAR users. 
+//Used to create the first ADMIN user. Admin user is the IT Admin, who can create SUPERUSER, MANAGER and REGULAR users.
 //Disable the rounte after creating the first user.
 Route::post('/createadmin', 'UserController@createAdmin');
 
@@ -73,7 +73,7 @@ function () {
     Route::get('/clinic','ClinicController@clinicSearch');
     //Used to update clinic information.
     Route::patch('/clinic', 'ClinicController@clinicUpdate');
-    //Used to delete a clinic. 
+    //Used to delete a clinic.
     Route::delete('/clinic', 'ClinicController@clinicDelete');
 
 });
@@ -100,5 +100,8 @@ Route::middleware('auth:api')->get('/vitals', 'Vitals\VitalsController@getVitals
 //Miscellaneous.
 Route::middleware('auth:api')->get('/country_list', 'CountryController@getCountries');
 
-//ACSS.
+//GET FORMS (get the content of triage questionnaire).
 Route::middleware('auth:api')->get('/forms_content', 'FormsController@getForm');
+
+//POST ACSS triage results.
+Route::middleware('auth:api')->post('/triage/post_acss', 'Triage\ACSS_ResultsController@createRecord');
