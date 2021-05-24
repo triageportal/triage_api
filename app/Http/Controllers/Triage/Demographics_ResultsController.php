@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Triage;
 
-use App\triage\acss\Results;
+use App\triage\demographics\Results;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Patient;
 use Exception;
-use Carbon\Carbon;
 
-class ACSS_ResultsController extends Controller
+class Demographics_ResultsController extends Controller
 {
+
 
     public function __construct()
     {
@@ -23,7 +23,8 @@ class ACSS_ResultsController extends Controller
 
     $request->validate([
 
-        'patient_id'=>'required|integer'
+        'patient_id'=>'required|integer',
+        'timestamp'=>'required'
 
     ]);
 
@@ -41,7 +42,7 @@ class ACSS_ResultsController extends Controller
             //Capturing user ID.
             $user = Auth::user();
             $created_by = $user -> id;
-            $current_timestamp = Carbon::now()->timestamp;
+            $current_timestamp = $request['timestamp'];
 
             $results =  (Array)$request['results'];
 
@@ -70,14 +71,7 @@ class ACSS_ResultsController extends Controller
 
             }
 
-            $response = [
-
-                'status' => 'success',
-                'timestamp' =>  $current_timestamp
-
-            ];
-
-            return response()->json($response, 200);
+            return response()->json('success', 200);
 
         } catch (exception $e) {
 
@@ -93,5 +87,4 @@ class ACSS_ResultsController extends Controller
         }
 
     }
-
 }

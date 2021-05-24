@@ -104,4 +104,7 @@ Route::middleware('auth:api')->get('/country_list', 'CountryController@getCountr
 Route::middleware('auth:api')->get('/forms_content', 'FormsController@getForm');
 
 //POST ACSS triage results.
-Route::middleware('auth:api')->post('/triage/post_acss', 'Triage\ACSS_ResultsController@createRecord');
+Route::middleware('auth:api')->post('/triage/acss', 'Triage\ACSS_ResultsController@createRecord');
+
+//POST Demographics triage results.
+Route::middleware('auth:api')->post('/triage/demographics', 'Triage\Demographics_ResultsController@createRecord');
