@@ -10,6 +10,7 @@ use App\Http\Helper\HelperClass;
 use App\User;
 use App\Patient;
 use Exception;
+use Carbon\Carbon;
 
 class ACSS_ResultsController extends Controller
 {
@@ -42,6 +43,7 @@ class ACSS_ResultsController extends Controller
             //Capturing user ID.
             $user = Auth::user();
             $created_by = $user -> id;
+            $current_timestamp = Carbon::now()->timestamp;
 
             $results =  (Array)$request['results'];
 
@@ -64,6 +66,7 @@ class ACSS_ResultsController extends Controller
                     $results_table -> question_id = preg_replace("/[^\d]/", "", $question_id);
                     $results_table -> response_id = preg_replace("/[^\d]/", "", $response_id);
                     $results_table -> created_by = preg_replace("/[^\d]/", "", $created_by);
+                    $results_table -> created_at = $current_timestamp;
                     $results_table -> save();
                 }
 
