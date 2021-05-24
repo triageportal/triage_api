@@ -14,7 +14,7 @@ use Exception;
 
 class PatientController extends Controller
 {
-    
+
     public function createPatient(Request $request){
 
         $request -> validate([
@@ -25,35 +25,41 @@ class PatientController extends Controller
             'month'=>'required',
             'date'=>'required',
             'gender'=>'required',
-            'email'=>'required|email'      
+            'email'=>'required|email'
 
         ]);
-      
+
+        $user = Auth::user();
+
+        if($user->clinic_id == 0){
+
+            return response()->json('Cannot create patient with clinic_id = 0', 500);
+
+        }
+
 
         $dob_Month = $request['month'];
 
         $dob_Date = $request['date'];
 
-        $dob_Year = $request['year'];               
-       
-        $date = strtotime($dob_Month."/".$dob_Date."/". $dob_Year); 
+        $dob_Year = $request['year'];
 
-        $request['date_of_birth'] = date('Y-m-d H:i:s', $date); 
+        $date = strtotime($dob_Month."/".$dob_Date."/". $dob_Year);
+
+        $request['date_of_birth'] = date('Y-m-d H:i:s', $date);
 
         try {
-            
+
             $help = new HelperClass();
 
             $request = $help->sanitize($request->all());
-    
+
             $patient = new Patient();
-    
-            $user = Auth::user();
 
             $users = new User();
-    
-            $patientCheck = $patient::where('email', $request['email'])->get();            
-    
+
+            $patientCheck = $patient::where('email', $request['email'])->where('clinic_id', $user['clinic_id'])->get();
+
             if(isset($patientCheck)){
 
                 foreach($patientCheck as $item){
@@ -64,40 +70,40 @@ class PatientController extends Controller
                         $createdByUser = $users::where('id', $item['created_by'])->first();
 
                         $item['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
-        
-                        if($item['updated_by'] != null){                        
-        
+
+                        if($item['updated_by'] != null){
+
                             $updatedByUser = $users::where('id', $item['updated_by'])->first();
-        
+
                             $item['updated_by'] = $updatedByUser['first_name'].' '.$updatedByUser['last_name'];
-        
+
                         } else{
-        
+
                             $item['updated_by'] = 'Not available';
-        
+
                         }
-        
+
                         $item['clinic_name'] = $item->assignedClinic->name;
-        
+
                         //Unsetting eloquent relationships.
                         unset($item->assignedClinic);
-                        
+
                         unset($item->createdBy);
-        
+
                         unset($item->updatedBy);
 
                         $patientExists['result'] = 'exists';
 
                         $patientExists['patient'] = $item;
-                        
+
                         return response()->json($patientExists, 200);
-    
+
                     }
 
-                }  
+                }
 
             }
-    
+
             $patient->first_name = $request['first_name'];
             $patient->last_name = $request['last_name'];
             $patient->date_of_birth = $request['date_of_birth'];
@@ -105,7 +111,7 @@ class PatientController extends Controller
             $patient->email = $request['email'];
             $patient->created_by = $user['id'];
             $patient->clinic_id = $user['clinic_id'];
-    
+
             $patient->save();
 
             $sendEmail = new EmailController();
@@ -119,7 +125,7 @@ class PatientController extends Controller
 
             $newPatient['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
 
-            if($newPatient['updated_by'] != null){                        
+            if($newPatient['updated_by'] != null){
 
                 $updatedByUser = $users::where('id', $newPatient['updated_by'])->first();
 
@@ -133,9 +139,9 @@ class PatientController extends Controller
 
             $newPatient['clinic_name'] = $newPatient->assignedClinic->name;
 
-            //Unsetting eloquent relationships. 
+            //Unsetting eloquent relationships.
             unset($newPatient->assignedClinic);
-            
+
             unset($newPatient->createdBy);
 
             unset($newPatient->updatedBy);
@@ -143,12 +149,12 @@ class PatientController extends Controller
             $patientSuccess['result'] = 'success';
 
             $patientSuccess['patient'] = $newPatient;
-    
-            return response()->json($patientSuccess, 200);                
 
-        } catch (exception $e) { 
-           
-           //"php artisan config:clear" to reload changes in .env file.             
+            return response()->json($patientSuccess, 200);
+
+        } catch (exception $e) {
+
+           //"php artisan config:clear" to reload changes in .env file.
            if(app()->environment() == 'dev'){
 
                 return $e;
@@ -157,9 +163,9 @@ class PatientController extends Controller
 
                 return response()->json('error', 500);
 
-           } 
+           }
 
-        }        
+        }
     }
 
 
@@ -198,7 +204,7 @@ search by full name: firstname,lastname
 
                 //format: searchkeyword
                 $patientResult =  $patient::where('first_name', 'like', '%'.$request['keyword'].'%')->where('clinic_id', $user['clinic_id'])->get();
-            
+
             }else if(sizeof($search_keyword) == 2 && strlen(str_replace(' ', '', $search_keyword[0])) > 0 && strlen(str_replace(' ', '', $search_keyword[1])) > 0){
 
                 //format: firstname, lastname
@@ -209,7 +215,7 @@ search by full name: firstname,lastname
 
                     $query->where('first_name', 'like', '%'.$search_first_name.'%')->
                     orWhere('last_name', 'like', '%'.$search_last_name.'%');
-            
+
                 })->where('clinic_id', $user['clinic_id'])->get();
 
             }else if(sizeof($search_keyword) == 2 && strlen(str_replace(' ', '', $search_keyword[0])) == 0 && strlen(str_replace(' ', '', $search_keyword[1])) > 0){
@@ -230,19 +236,19 @@ search by full name: firstname,lastname
 
                     $query->where('first_name', 'like', '%'.$request['keyword'].'%')->
                     orWhere('last_name', 'like', '%'.$request['keyword'].'%');
-            
+
                 })->where('clinic_id', $user['clinic_id'])->get();
 
             }
 
 
-            foreach($patientResult as $item){     
+            foreach($patientResult as $item){
 
                 $createdByUser = $users::where('id', $item['created_by'])->first();
 
                 $item['created_by'] = $createdByUser['first_name'].' '.$createdByUser['last_name'];
 
-                if($item['updated_by'] != null){                        
+                if($item['updated_by'] != null){
 
                     $updatedByUser = $users::where('id', $item['updated_by'])->first();
 
@@ -257,7 +263,7 @@ search by full name: firstname,lastname
                 $item['clinic_name'] = $item->assignedClinic->name;
 
                 unset($item->assignedClinic);
-                
+
                 unset($item->createdBy);
 
                 unset($item->updatedBy);
@@ -265,11 +271,11 @@ search by full name: firstname,lastname
             }
 
             return response()->json($patientResult, '200');
-            
+
 
         } catch (exception $e) {
-           
-            //"php artisan config:clear" to reload changes in .env file.             
+
+            //"php artisan config:clear" to reload changes in .env file.
             if(app()->environment() == 'dev'){
 
                     return $e;
@@ -278,31 +284,31 @@ search by full name: firstname,lastname
 
                     return response()->json('error', 500);
 
-            } 
+            }
 
         }
 
 }
 
-public function getPatient($id){	
-    $help = new HelperClass();	
-    $patientId = $help->sanitize($id);	
-    $patient = new Patient();	
-    	
-    try {	
-        	
-        $patientResult =  $patient::where('id', $patientId)->firstOrFail();	
-        return response()->json($patientResult, '200');	
-        	
-    } catch (exception $e) {	
-        	
-        //"php artisan config:clear" to reload changes in .env file.             	
-        if(app()->environment() == 'dev'){	
-                return $e;	
-        }else{	
-                return response()->json('error', 500);	
-        } 	
-    }	
+public function getPatient($id){
+    $help = new HelperClass();
+    $patientId = $help->sanitize($id);
+    $patient = new Patient();
+
+    try {
+
+        $patientResult =  $patient::where('id', $patientId)->firstOrFail();
+        return response()->json($patientResult, '200');
+
+    } catch (exception $e) {
+
+        //"php artisan config:clear" to reload changes in .env file.
+        if(app()->environment() == 'dev'){
+                return $e;
+        }else{
+                return response()->json('error', 500);
+        }
+    }
 }
 
 
