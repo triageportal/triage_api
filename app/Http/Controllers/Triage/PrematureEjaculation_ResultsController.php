@@ -18,7 +18,8 @@ class PrematureEjaculation_ResultsController extends Controller
 
     $request->validate([
 
-        'patient_id'=>'required|integer'
+        'patient_id'=>'required|integer',
+        'timestamp'=>'required'
 
     ]);
 

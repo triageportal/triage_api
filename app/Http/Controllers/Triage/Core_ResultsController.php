@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Patient;
 use Exception;
-use Carbon\Carbon;
 
 class Core_ResultsController extends Controller
 {
@@ -25,8 +24,8 @@ class Core_ResultsController extends Controller
 
     $request->validate([
 
-        'patient_id'=>'required|integer'
-
+        'patient_id'=>'required|integer',
+        'timestamp'=>'required'
     ]);
 
         try {
@@ -43,7 +42,6 @@ class Core_ResultsController extends Controller
             //Capturing user ID.
             $user = Auth::user();
             $created_by = $user -> id;
-            $current_timestamp = Carbon::now()->timestamp;
 
             $results =  (Array)$request['results'];
 
@@ -77,7 +75,7 @@ class Core_ResultsController extends Controller
                     $results_table -> question_id = preg_replace("/[^\d]/", "", $question_id);
                     $results_table -> response_id = preg_replace("/[^\d]/", "", $response_id);
                     $results_table -> created_by = preg_replace("/[^\d]/", "", $created_by);
-                    $results_table -> created_at = $current_timestamp;
+                    $results_table -> created_at = preg_replace("/[^\d]/", "", strtotime($request['timestamp']));
                     $results_table -> save();
                 }
 
@@ -86,7 +84,7 @@ class Core_ResultsController extends Controller
             //A timestamp must be returned for any POST other than demographcis and risk_factor.
             $response = [
                 'status' => 'success',
-                'timestamp' =>  $current_timestamp
+                'timestamp' =>  $request['timestamp']
             ];
 
             return response()->json($response, 200);
