@@ -113,4 +113,4 @@ Route::middleware('auth:api')->post('/triage/demographics', 'Triage\Demographics
 Route::middleware('auth:api')->post('/triage/risk_factor', 'Triage\RiskFactor_ResultsController@createRecord');
 
 //POST Premature Ejaculation triage results.
-Route::middleware('auth:api')->post('/triage/premature_ejaculation', 'Triage\PrematureEjaculation_ResultsController@createRecord');
+Route::middleware('auth:api')->post('/triage/premature_ejaculation', 'Triage\PremEjac_ResultsController@createRecord');

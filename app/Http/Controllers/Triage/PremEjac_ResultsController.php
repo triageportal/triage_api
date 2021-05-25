@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Exception;
 
-class PrematureEjaculation_ResultsController extends Controller
+class PremEjac_ResultsController extends Controller
 {
     public function __construct()
     {
