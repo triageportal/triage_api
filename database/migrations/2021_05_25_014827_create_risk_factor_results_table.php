@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDemographicsQuestionResponseLkTable extends Migration
+class CreateRiskFactorResultsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,14 @@ class CreateDemographicsQuestionResponseLkTable extends Migration
      */
     public function up()
     {
-        Schema::create('demographics_quest_resp_lk', function (Blueprint $table) {
+        Schema::create('risk_factor_results', function (Blueprint $table) {
             $table->id();
+            $table->integer('patient_id');
+            $table->integer('category_id');
             $table->integer('question_id');
             $table->integer('response_id');
+            $table->integer('created_by');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +31,6 @@ class CreateDemographicsQuestionResponseLkTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('demographics_quest_resp_lk');
+        Schema::dropIfExists('risk_factor_results');
     }
 }

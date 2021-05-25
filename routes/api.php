@@ -108,3 +108,6 @@ Route::middleware('auth:api')->post('/triage/acss', 'Triage\ACSS_ResultsControll
 
 //POST Demographics triage results.
 Route::middleware('auth:api')->post('/triage/demographics', 'Triage\Demographics_ResultsController@createRecord');
+
+//POST Risk Factor triage results.
+Route::middleware('auth:api')->post('/triage/risk_factor', 'Triage\RiskFactor_ResultsController@createRecord');

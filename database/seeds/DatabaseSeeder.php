@@ -14,5 +14,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CountrySeeder::class);
         $this->call(AcssSeeder::class);
         $this->call(DemographicsSeeder::class);
+        $this->call(RiskFactorSeeder::class);
     }
 }
