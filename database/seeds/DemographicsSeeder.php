@@ -53,25 +53,8 @@ class DemographicsSeeder extends Seeder
             ['question_id' => 4, 'response_id' => 24],
             ['question_id' => 4, 'response_id' => 25],
             ['question_id' => 4, 'response_id' => 26],
-            ['question_id' => 4, 'response_id' => 27],
-            ['question_id' => 5, 'response_id' => 28],
-            ['question_id' => 5, 'response_id' => 29],
-            ['question_id' => 5, 'response_id' => 30],
-            ['question_id' => 5, 'response_id' => 31],
-            ['question_id' => 5, 'response_id' => 32],
-            ['question_id' => 6, 'response_id' => 33],
-            ['question_id' => 6, 'response_id' => 34],
-            ['question_id' => 7, 'response_id' => 33],
-            ['question_id' => 7, 'response_id' => 34],
-            ['question_id' => 8, 'response_id' => 33],
-            ['question_id' => 8, 'response_id' => 34],
-            ['question_id' => 9, 'response_id' => 33],
-            ['question_id' => 9, 'response_id' => 34],
-            ['question_id' => 10, 'response_id' => 33],
-            ['question_id' => 10, 'response_id' => 34],
-            ['question_id' => 11, 'response_id' => 33],
-            ['question_id' => 11, 'response_id' => 34]
-
+            ['question_id' => 4, 'response_id' => 27]
+           
         ];
 
         QuestionResponseLk::insert($link);
@@ -113,16 +96,7 @@ class DemographicsSeeder extends Seeder
             ['id' => 24,'value' => 0, 'eng' => 'Widowed'],
             ['id' => 25,'value' => 0, 'eng' => 'Separated'],
             ['id' => 26,'value' => 0, 'eng' => 'Divorced'],
-            ['id' => 27,'value' => 0, 'eng' => 'Open Relationship'],
-            //Lifestyle
-            ['id' => 28,'value' => 0, 'eng' => 'Highly active (More than 3 miles of daily walk or equivalent exersise)'],
-            ['id' => 29,'value' => 0, 'eng' => 'Lightly active (Intentional exercise every day for at least 30 minutes)'],
-            ['id' => 30,'value' => 0, 'eng' => 'Moderately active (1.5-3 miles of daily walk or equivalent exersise)'],
-            ['id' => 31,'value' => 0, 'eng' => 'Non active'],
-            ['id' => 32,'value' => 0, 'eng' => 'Sedentary active (Less than 30 minutes a day of intentional exercise)'],
-            //Smoking, ALchohol, Drugs, High LDL, High Blood Pressure, Obesity
-            ['id' => 33,'value' => 0, 'eng' => 'Yes'],
-            ['id' => 34,'value' => 0, 'eng' => 'No']
+            ['id' => 27,'value' => 0, 'eng' => 'Open Relationship']   
 
         ];
 
@@ -140,14 +114,7 @@ class DemographicsSeeder extends Seeder
             ['category_id' => 1,'id' => 1,'eng' => 'Education'],
             ['category_id' => 1,'id' => 2,'eng' => 'Employement'],
             ['category_id' => 1,'id' => 3,'eng' => 'Race/Ethnicity'],
-            ['category_id' => 1,'id' => 4,'eng' => 'Marital status'],
-            ['category_id' => 2,'id' => 5,'eng' => 'Life style'],
-            ['category_id' => 2,'id' => 6,'eng' => 'Smoking'],
-            ['category_id' => 2,'id' => 7,'eng' => 'Alchohol'],
-            ['category_id' => 2,'id' => 8,'eng' => 'Drugs'],
-            ['category_id' => 2,'id' => 9,'eng' => 'High LDL(\'bad\' cholesterol)'],
-            ['category_id' => 2,'id' => 10,'eng' => 'High blood pressure'],
-            ['category_id' => 2,'id' => 11,'eng' => 'Obesity'],
+            ['category_id' => 1,'id' => 4,'eng' => 'Marital status']
 
         ];
 
@@ -161,9 +128,8 @@ class DemographicsSeeder extends Seeder
 
         $categories = [
 
-            ['id'=> 1, 'eng' => 'Demographic'],
-            ['id'=> 2, 'eng' => 'Risk Factors']
-
+            ['id'=> 1, 'eng' => 'Demographic']
+           
         ];
 
         Category::insert($categories);

@@ -29,34 +29,41 @@ class FormsController extends Controller
 
            try{
 
-            $query ='';
+            $query = 'SELECT cat.?language AS category, 
+                    cat.id AS category_id, 
+                    quest.id AS question_id, 
+                    quest.?language AS question_text,
+                    resp.id AS response_id, 
+                    resp.?language AS response_text, 
+                    resp.value AS response_value
+
+                    FROM ?table_category AS cat
+                    
+                    INNER JOIN ?table_questions AS quest ON cat.id = quest.category_id
+                    INNER JOIN ?table_quest_resp_lk  AS lk ON quest.id = lk.question_id
+                    INNER JOIN ?table_response AS resp ON lk.response_id = resp.id';
 
             switch ($request['form']) {
                 case "acss":
 
-                    $query = 'SELECT cat.? AS category, cat.id AS category_id, quest.id AS question_id, quest.? AS question_text,
-                            resp.id AS response_id, resp.? AS response_text, resp.value AS response_value
-                            FROM acss_category AS cat
-                            INNER JOIN acss_questions AS quest ON cat.id = quest.category_id
-                            INNER JOIN acss_quest_resp_lk  AS lk ON quest.id = lk.question_id
-                            INNER JOIN acss_response AS resp ON lk.response_id = resp.id';
-
-                    $query = str_replace('?', $request['language'], $query);
+                    $query = str_replace('?table', 'acss', $query);
+                    $query = str_replace('?language', $request['language'], $query);
 
                   break;
 
                 case "demographics":
 
-                    $query = 'SELECT cat.? AS category, cat.id AS category_id, quest.id AS question_id, quest.? AS question_text,
-                            resp.id AS response_id, resp.? AS response_text, resp.value AS response_value
-                            FROM demographics_category AS cat
-                            INNER JOIN demographics_questions AS quest ON cat.id = quest.category_id
-                            INNER JOIN demographics_question_response_lk  AS lk ON quest.id = lk.question_id
-                            INNER JOIN demographics_response AS resp ON lk.response_id = resp.id';
-
-                    $query = str_replace('?', $request['language'], $query);
+                    $query = str_replace('?table', 'demographics', $query);
+                    $query = str_replace('?language', $request['language'], $query);
 
                   break;
+
+                case "risk_factor":
+
+                $query = str_replace('?table', 'risk_factor', $query);
+                $query = str_replace('?language', $request['language'], $query);
+
+                break;
 
                 default:
                 return response()->json('unable to find requested diagnostics form.', 500);
@@ -160,8 +167,6 @@ class FormsController extends Controller
                 }
 
            }
-
-
 
     }
 }

@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\Triage;
 
-
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Exception;
 
-class Demographics_ResultsController extends Controller
+class RiskFactor_ResultsController extends Controller
 {
-
-
     public function __construct()
     {
         $this->middleware(['auth:api'], ['except' => []]);
@@ -29,7 +26,7 @@ class Demographics_ResultsController extends Controller
     try {
 
         $core_results = new Core_ResultsController;
-        $result = $core_results->createRecord($request, 'demographics');
+        $result = $core_results->createRecord($request, 'risk_factor');
         return $result;
 
     } catch (exception $e) {
