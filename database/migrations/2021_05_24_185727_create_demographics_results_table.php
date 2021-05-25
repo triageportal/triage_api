@@ -31,6 +31,6 @@ class CreateDemographicsResultsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('results');
+        Schema::dropIfExists('demographics_results');
     }
 }
