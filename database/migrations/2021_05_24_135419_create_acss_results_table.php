@@ -31,6 +31,6 @@ class CreateAcssResultsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('results');
+        Schema::dropIfExists('acss_results');
     }
 }
