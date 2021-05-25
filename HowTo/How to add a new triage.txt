@@ -1,0 +1,211 @@
+1) Create the migration files for the new triage (php artisan make:migration *migration_name*):
+	- create_*NewTriage*_category_table (table name: *triage_name_category)
+            $table->integer('id')->unique()->nullable();
+            $table->string('eng')->nullable();
+            $table->string('rus')->nullable();
+            $table->string('uzb')->nullable();
+
+	- create_*NewTriage*_questions_table (table name: *triage_name_questions)
+            $table->integer('id')->unique()->nullable();
+            $table->integer('category_id')->nullable();
+            $table->string('eng')->nullable();
+            $table->string('rus')->nullable();
+            $table->string('uzb')->nullable();
+
+	- create_*NewTriage*_response_table (table name: *triage_name_response)
+            $table->integer('id')->unique()->nullable();
+            $table->integer('value')->nullable();
+            $table->string('eng')->nullable();
+            $table->string('rus')->nullable();
+            $table->string('uzb')->nullable();
+
+	- create_*NewTriage*_question_response_lk_table (table name: *triage_name_quest_resp_lk)
+            $table->id();
+            $table->integer('question_id');
+            $table->integer('response_id');
+
+	- create_*NewTriage*_results_table (table name: *triage_name_results)
+            $table->id();
+            $table->integer('patient_id');
+            $table->integer('category_id');
+            $table->integer('question_id');
+            $table->integer('response_id');
+            $table->integer('created_by');
+            $table->timestamps();
+
+2) Run the migration (php artisan migrate).
+
+3) Create a dedicated modal for each table:
+			-  php artisan make:model triage/*lowercase_triage_name*/Category
+					protected $table = '*table_name*_category';
+					protected $fillable=['eng', 'rus', 'uzb'];
+					
+			-  php artisan make:model triage/*lowercase_triage_name*/QuestionResponseLk
+					protected $table = '*table_name*_quest_resp_lk';
+					protected $fillable = ['question_id', 'response_id'];
+					
+			-  php artisan make:model triage/premature_ejaculation/Questions
+					protected $table = '*table_name*_questions';
+					protected $fillable = ['category_id', 'eng', 'rus', 'uzb'];
+					
+			-  php artisan make:model triage/premature_ejaculation/Response
+					protected $table = '*table_name*_response';
+					protected $fillable = ['value', 'eng', 'rus', 'uzb'];
+					
+			-  php artisan make:model triage/premature_ejaculation/Results
+					protected $table = '*table_name*_results';
+					protected $fillable = ['patient_id', 'category_id', 'question_id', 'response_id', 'created_by', 'created_at', 'updated_at'];
+
+
+4) Create the seed file (php artisan make:seeder *SeederName*).
+
+5) Copy the new seeder class name and add to the DatabaseSeeder.php file (under database/seeds folder).
+    public function run()
+    {
+        $this->call(*SeederClassName*::class);
+    }
+
+6) Paste the following code into the newly created seed file class:
+
+		  /**
+			 * Run the database seeds.
+			 *
+			 * @return void
+			 */
+			public function run()
+			{
+				$this->populateCategory();
+				$this->populateQuestions();
+				$this->populateResponse();
+				$this->linkQuestionResponse();
+			}
+
+			private function linkQuestionResponse(){
+
+				QuestionResponseLk::truncate();
+
+				$link = [
+
+					['question_id' => *qint_question_id, 'response_id' => *int_response_id]
+
+				];
+
+				QuestionResponseLk::insert($link);
+
+			}
+
+			private function populateResponse(){
+
+				Response::truncate();
+
+				$response = [
+
+				   
+					['id' => *int_response_id,'value' => *int_response_value(0 if none), 'eng' => '*string_response_description']
+
+
+				];
+
+				Response::insert($response);
+
+
+			}
+
+			private function populateQuestions(){
+
+				Questions::truncate();
+
+				$questions = [
+
+					['category_id' => *int_category_id,'id' => *int_question_id,'eng' => '*string_question_description']
+
+				];
+
+				Questions::insert($questions);
+
+			}
+
+			private function populateCategory(){
+
+				Category::truncate();
+
+				$categories = [
+
+					['id'=> *int_category_id, 'eng' => '*string_caregory_description']
+
+				];
+
+				Category::insert($categories);
+
+			}
+
+
+7) Fix the new seeder file (use/imports) to point to the newly created models by adding:
+			use App\triage\*new_triage_folder*\Category;
+			use App\triage\*new_triage_folder*\Questions;
+			use App\triage\*new_triage_folder*\Response;
+			use App\triage\*new_triage_folder*\QuestionResponseLk;
+
+
+
+
+8) Create new controller as: php artisan make:controller Triage/*NewTriageName*_ResultsController
+			- Update the use/imports: 
+				use App\Http\Controllers\Controller;
+				use Illuminate\Http\Request;
+				use Exception;
+				
+9) Update the new contoller class content: 
+
+		public function __construct()
+			{
+				$this->middleware(['auth:api'], ['except' => []]);
+
+			}
+
+			public function createRecord(Request $request){
+
+			$request->validate([
+
+				'patient_id'=>'required|integer',
+				'timestamp'=>'required'
+
+			]);
+
+			try {
+
+				$core_results = new Core_ResultsController;
+				$result = $core_results->createRecord($request, '*new_triage_name*');
+				return $result;
+
+			} catch (exception $e) {
+
+				if(app()->environment() == 'dev'){
+
+					return $e;
+
+			   }else{
+
+					return response()->json('error', 500);
+
+			   }
+			}
+
+			}
+
+10) Update the Core_ResultsController:
+		- Add the use/import: use App\triage\*new_triage*\Results as *new_triage*_Result;
+		
+                    //Source DB table gets set depending on $form.
+                    $results_table = null;
+                    if($form == 'acss'){
+                        $results_table = new ACSS_Result;
+                    }else if($form == 'demographics'){
+                        $results_table = new Demographics_Result;
+                    }else if($form == 'risk_factor'){
+                        $results_table = new Risk_Factor_Result;
+                    }else if($form == '*new_triage*'){
+                        $results_table = new *new_triage*;
+                    }
+
+11) Update the API route to call the new controller.

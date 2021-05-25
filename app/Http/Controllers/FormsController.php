@@ -29,16 +29,16 @@ class FormsController extends Controller
 
            try{
 
-            $query = 'SELECT cat.?language AS category, 
-                    cat.id AS category_id, 
-                    quest.id AS question_id, 
+            $query = 'SELECT cat.?language AS category,
+                    cat.id AS category_id,
+                    quest.id AS question_id,
                     quest.?language AS question_text,
-                    resp.id AS response_id, 
-                    resp.?language AS response_text, 
+                    resp.id AS response_id,
+                    resp.?language AS response_text,
                     resp.value AS response_value
 
                     FROM ?table_category AS cat
-                    
+
                     INNER JOIN ?table_questions AS quest ON cat.id = quest.category_id
                     INNER JOIN ?table_quest_resp_lk  AS lk ON quest.id = lk.question_id
                     INNER JOIN ?table_response AS resp ON lk.response_id = resp.id';
@@ -56,14 +56,21 @@ class FormsController extends Controller
                     $query = str_replace('?table', 'demographics', $query);
                     $query = str_replace('?language', $request['language'], $query);
 
-                  break;
+                    break;
 
                 case "risk_factor":
 
-                $query = str_replace('?table', 'risk_factor', $query);
-                $query = str_replace('?language', $request['language'], $query);
+                    $query = str_replace('?table', 'risk_factor', $query);
+                    $query = str_replace('?language', $request['language'], $query);
 
-                break;
+                    break;
+
+                case "premature_ejaculation":
+
+                    $query = str_replace('?table', 'premature_ejaculation', $query);
+                    $query = str_replace('?language', $request['language'], $query);
+
+                    break;
 
                 default:
                 return response()->json('unable to find requested diagnostics form.', 500);

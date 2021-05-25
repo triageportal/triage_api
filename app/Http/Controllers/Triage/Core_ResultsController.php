@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Triage;
 use App\triage\acss\Results as ACSS_Result;
 use App\triage\demographics\Results as Demographics_Result;
 use App\triage\risk_factor\Results as Risk_Factor_Result;
+use App\triage\premature_ejaculation\Results as Premature_Ejaculation_Result;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -60,14 +61,16 @@ class Core_ResultsController extends Controller
 
                     //Source DB table gets set depending on $form.
                     $results_table = null;
-                    if(strcmp($form, 'acss')){
+                    if($form == 'acss'){
                         $results_table = new ACSS_Result;
-                    }else if(strcmp($form, 'demographics')){
+                    }else if($form == 'demographics'){
                         $results_table = new Demographics_Result;
-                    }else if(strcmp($form, 'risk_factor')){
+                    }else if($form == 'risk_factor'){
                         $results_table = new Risk_Factor_Result;
+                    }else if($form == 'premature_ejaculation'){
+                        $results_table = new Premature_Ejaculation_Result;
                     }
-                    
+
                     //preg_replace("/[^\d]/", "", *STRING) extracts only numbers from the string.
                     $results_table -> patient_id = preg_replace("/[^\d]/", "", $patient_id);
                     $results_table -> category_id = preg_replace("/[^\d]/", "", $category_id);
@@ -81,22 +84,10 @@ class Core_ResultsController extends Controller
             }
 
             //A timestamp must be returned for any POST other than demographcis and risk_factor.
-            $response = null;
-
-            if($form == 'demographics' || $form == 'risk_factor'){
-
-                $response = 'success';
-
-            }else{
-
-                $response = [
-
-                    'status' => 'success',
-                    'timestamp' =>  $current_timestamp
-    
-                ];
-
-            }
+            $response = [
+                'status' => 'success',
+                'timestamp' =>  $current_timestamp
+            ];
 
             return response()->json($response, 200);
 
