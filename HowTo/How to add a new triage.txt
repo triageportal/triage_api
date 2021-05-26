@@ -1,30 +1,31 @@
 1) Create the migration files for the new triage (php artisan make:migration *migration_name*):
-	- create_*NewTriage*_category_table (table name: *triage_name_category)
+
+	- create_*NewTriage*_category_table (table name: *TriageName*_category)
             $table->integer('id')->unique()->nullable();
             $table->string('eng')->nullable();
             $table->string('rus')->nullable();
             $table->string('uzb')->nullable();
 
-	- create_*NewTriage*_questions_table (table name: *triage_name_questions)
+	- create_*NewTriage*_questions_table (table name: *TriageName*_questions)
             $table->integer('id')->unique()->nullable();
             $table->integer('category_id')->nullable();
             $table->string('eng')->nullable();
             $table->string('rus')->nullable();
             $table->string('uzb')->nullable();
 
-	- create_*NewTriage*_response_table (table name: *triage_name_response)
+	- create_*NewTriage*_response_table (table name: **TriageName*_response)
             $table->integer('id')->unique()->nullable();
             $table->integer('value')->nullable();
             $table->string('eng')->nullable();
             $table->string('rus')->nullable();
             $table->string('uzb')->nullable();
 
-	- create_*NewTriage*_question_response_lk_table (table name: *triage_name_quest_resp_lk)
+	- create_*NewTriage*_question_response_lk_table (table name: *TriageName*_quest_resp_lk)
             $table->id();
             $table->integer('question_id');
             $table->integer('response_id');
 
-	- create_*NewTriage*_results_table (table name: *triage_name_results)
+	- create_*NewTriage*_results_table (table name: *TriageName*_results)
             $table->id();
             $table->integer('patient_id');
             $table->integer('category_id');
@@ -32,6 +33,8 @@
             $table->integer('response_id');
             $table->integer('created_by');
             $table->timestamps();
+			
+	- create_*NewTriage*_calculated_result_table (table name: *TriageName*_calculated_result)
 
 2) Run the migration (php artisan migrate).
 
@@ -208,4 +211,7 @@
                         $results_table = new *new_triage*;
                     }
 
-11) Update the API route to call the new controller.
+
+11) Create a new controller in path (app\Http\Controllers\Triage\Calculate_Results) to calculate\return the triage results and save in DB calculated_result table.
+
+12) Update the API route to call the new controller.

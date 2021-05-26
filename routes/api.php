@@ -114,3 +114,6 @@ Route::middleware('auth:api')->post('/triage/risk_factor', 'Triage\RiskFactor_Re
 
 //POST Premature Ejaculation triage results.
 Route::middleware('auth:api')->post('/triage/premature_ejaculation', 'Triage\PremEjac_ResultsController@createRecord');
+
+//GET Last Premature Ejaculation result.
+Route::middleware('auth:api')->get('/triage/premature_ejaculation', 'Triage\Calculate_Results\PremEjac_CalculateResult@lastCalculatedResult');
