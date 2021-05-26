@@ -59,14 +59,33 @@ class RiskFactorSeeder extends Seeder
         $response = [
 
             //Lifestyle
-            ['id' => 1,'value' => 0, 'eng' => 'Highly active (More than 3 miles of daily walk or equivalent exersise)'],
-            ['id' => 2,'value' => 0, 'eng' => 'Lightly active (Intentional exercise every day for at least 30 minutes)'],
-            ['id' => 3,'value' => 0, 'eng' => 'Moderately active (1.5-3 miles of daily walk or equivalent exersise)'],
-            ['id' => 4,'value' => 0, 'eng' => 'Non active'],
-            ['id' => 5,'value' => 0, 'eng' => 'Sedentary active (Less than 30 minutes a day of intentional exercise)'],
+            ['id' => 1,'value' => 0,
+            'eng' => 'Highly active (More than 3 miles of daily walk or equivalent exersise)',
+            'rus' => 'Высокая активность (ежедневная прогулка более 3 миль или аналогичное упражнение)'],
+
+            ['id' => 2,'value' => 0,
+            'eng' => 'Lightly active (Intentional exercise every day for at least 30 minutes)',
+            'rus' => 'Слабая активность (намеренные упражнения каждый день не менее 30 минут)'],
+
+            ['id' => 3,'value' => 0,
+            'eng' => 'Moderately active (1.5-3 miles of daily walk or equivalent exersise)',
+            'rus' => 'Умеренно активный (1,5-3 мили ежедневной ходьбы или аналогичное упражнение)'],
+
+            ['id' => 4,'value' => 0,
+            'eng' => 'Non active',
+            'rus' => 'Не активен'],
+
+            ['id' => 5,'value' => 0,
+            'eng' => 'Sedentary active (Less than 30 minutes a day of intentional exercise)',
+            'rus' => 'Сидячий образ жизни (менее 30 минут преднамеренных упражнений в день)'],
             //Smoking, ALchohol, Drugs, High LDL, High Blood Pressure, Obesity
-            ['id' => 6,'value' => 0, 'eng' => 'Yes'],
-            ['id' => 7,'value' => 0, 'eng' => 'No']
+            ['id' => 6,'value' => 0,
+            'eng' => 'Yes',
+            'rus' => 'да'],
+
+            ['id' => 7,'value' => 0,
+            'eng' => 'No',
+            'rus' => 'Нет']
 
         ];
 
@@ -81,13 +100,13 @@ class RiskFactorSeeder extends Seeder
 
         $questions = [
 
-            ['category_id' => 1,'id' => 1,'eng' => 'Life style'],
-            ['category_id' => 1,'id' => 2,'eng' => 'Smoking'],
-            ['category_id' => 1,'id' => 3,'eng' => 'Alchohol'],
-            ['category_id' => 1,'id' => 4,'eng' => 'Drugs'],
-            ['category_id' => 1,'id' => 5,'eng' => 'High LDL(\'bad\' cholesterol)'],
-            ['category_id' => 1,'id' => 6,'eng' => 'High blood pressure'],
-            ['category_id' => 1,'id' => 7,'eng' => 'Obesity']
+            ['category_id' => 1,'id' => 1,'eng' => 'Lifestyle', 'rus'=>'Образ жизни'],
+            ['category_id' => 1,'id' => 2,'eng' => 'Smoking', 'rus'=>'Курение'],
+            ['category_id' => 1,'id' => 3,'eng' => 'Alchohol', 'rus'=>'Алкоголь'],
+            ['category_id' => 1,'id' => 4,'eng' => 'Drugs', 'rus'=>'Наркотики'],
+            ['category_id' => 1,'id' => 5,'eng' => 'High LDL(\'bad\' cholesterol)', 'rus'=>'Высокий ЛПНП (холестерин)'],
+            ['category_id' => 1,'id' => 6,'eng' => 'High blood pressure', 'rus'=>'Высокое кровяное давление'],
+            ['category_id' => 1,'id' => 7,'eng' => 'Obesity', 'rus'=>'Ожирение']
 
         ];
 
@@ -101,7 +120,7 @@ class RiskFactorSeeder extends Seeder
 
         $categories = [
 
-            ['id'=> 1, 'eng' => 'Risk Factors']
+            ['id'=> 1, 'eng' => 'Risk Factors', 'rus' => 'Факторы риска']
 
         ];
 

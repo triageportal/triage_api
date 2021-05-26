@@ -54,7 +54,7 @@ class DemographicsSeeder extends Seeder
             ['question_id' => 4, 'response_id' => 25],
             ['question_id' => 4, 'response_id' => 26],
             ['question_id' => 4, 'response_id' => 27]
-           
+
         ];
 
         QuestionResponseLk::insert($link);
@@ -67,36 +67,36 @@ class DemographicsSeeder extends Seeder
 
         $response = [
             //Education
-            ['id' => 1,'value' => 0, 'eng' => 'No formal education'],
-            ['id' => 2,'value' => 0, 'eng' => 'Primary education'],
-            ['id' => 3,'value' => 0, 'eng' => 'Secondary education or high school'],
-            ['id' => 4,'value' => 0, 'eng' => 'GED'],
-            ['id' => 5,'value' => 0, 'eng' => 'Vocational qualification'],
-            ['id' => 6,'value' => 0, 'eng' => 'Bachelor\'s degree'],
-            ['id' => 7,'value' => 0, 'eng' => 'Master\'s degree'],
-            ['id' => 8,'value' => 0, 'eng' => 'Doctorate or higher'],
+            ['id' => 1,'value' => 0, 'eng' => 'No formal education', 'rus' => 'Без образования'],
+            ['id' => 2,'value' => 0, 'eng' => 'Primary education', 'rus' => 'Начальное образование'],
+            ['id' => 3,'value' => 0, 'eng' => 'Secondary education or high school', 'rus' => 'Среднее образование или средняя школа'],
+            ['id' => 4,'value' => 0, 'eng' => 'GED', 'rus' => 'Диплом об общем образовании'],
+            ['id' => 5,'value' => 0, 'eng' => 'Vocational qualification', 'rus' => 'Профессиональная квалификация'],
+            ['id' => 6,'value' => 0, 'eng' => 'Bachelor\'s degree', 'rus' => 'Степень бакалавра'],
+            ['id' => 7,'value' => 0, 'eng' => 'Master\'s degree', 'rus' => 'Степень магистра'],
+            ['id' => 8,'value' => 0, 'eng' => 'Doctorate or higher', 'rus' => 'Докторантура или выше'],
             //Employment
-            ['id' => 9,'value' => 0, 'eng' => 'Employed'],
-            ['id' => 10,'value' => 0, 'eng' => 'Self employed'],
-            ['id' => 11,'value' => 0, 'eng' => 'Unemployed'],
-            ['id' => 12,'value' => 0, 'eng' => 'Student'],
-            ['id' => 13,'value' => 0, 'eng' => 'Retired'],
-            ['id' => 14,'value' => 0, 'eng' => 'Unable to work'],
+            ['id' => 9,'value' => 0, 'eng' => 'Employed', 'rus' => 'Работаю'],
+            ['id' => 10,'value' => 0, 'eng' => 'Self employed', 'rus' => 'Частный предприниматель'],
+            ['id' => 11,'value' => 0, 'eng' => 'Unemployed', 'rus' => 'Безработный'],
+            ['id' => 12,'value' => 0, 'eng' => 'Student', 'rus' => 'Студент'],
+            ['id' => 13,'value' => 0, 'eng' => 'Retired', 'rus' => 'На пенсии'],
+            ['id' => 14,'value' => 0, 'eng' => 'Unable to work', 'rus' => 'Не могу работать'],
             //Race
-            ['id' => 15,'value' => 0, 'eng' => 'American Indian or Alaska Native'],
-            ['id' => 16,'value' => 0, 'eng' => 'Asian'],
-            ['id' => 17,'value' => 0, 'eng' => 'Black or African American'],
-            ['id' => 18,'value' => 0, 'eng' => 'Causasian'],
-            ['id' => 19,'value' => 0, 'eng' => 'Hispanic, Latino or Spanish origin'],
-            ['id' => 20,'value' => 0, 'eng' => 'Native Hawaiian or Other Pacific Islander'],            
-            ['id' => 21,'value' => 0, 'eng' => 'Any other ethnic group'],
+            ['id' => 15,'value' => 0, 'eng' => 'American Indian or Alaska Native', 'rus' => 'Американский индеец или коренной житель Аляски'],
+            ['id' => 16,'value' => 0, 'eng' => 'Asian', 'rus' => 'Азиат'],
+            ['id' => 17,'value' => 0, 'eng' => 'Black or African American', 'rus' => 'Афроамериканец'],
+            ['id' => 18,'value' => 0, 'eng' => 'Caucasian', 'rus' => 'Белый'],
+            ['id' => 19,'value' => 0, 'eng' => 'Hispanic, Latino or Spanish origin', 'rus' => 'Латиноамериканец или испанское происхождение'],
+            ['id' => 20,'value' => 0, 'eng' => 'Native Hawaiian or Other Pacific Islander', 'rus' => 'Коренной житель Гавайев или других тихоокеанских островов'],
+            ['id' => 21,'value' => 0, 'eng' => 'Any other ethnic group', 'rus' => 'Любая другая этническая группа'],
             //Marital status
-            ['id' => 22,'value' => 0, 'eng' => 'Single'],
-            ['id' => 23,'value' => 0, 'eng' => 'Married'],
-            ['id' => 24,'value' => 0, 'eng' => 'Widowed'],
-            ['id' => 25,'value' => 0, 'eng' => 'Separated'],
-            ['id' => 26,'value' => 0, 'eng' => 'Divorced'],
-            ['id' => 27,'value' => 0, 'eng' => 'Open Relationship']   
+            ['id' => 22,'value' => 0, 'eng' => 'Single', 'rus' => 'Холост'],
+            ['id' => 23,'value' => 0, 'eng' => 'Married', 'rus' => 'Женатый'],
+            ['id' => 24,'value' => 0, 'eng' => 'Widowed', 'rus' => 'Овдовевший'],
+            ['id' => 25,'value' => 0, 'eng' => 'Separated', 'rus' => 'Разведен (неофициально)'],
+            ['id' => 26,'value' => 0, 'eng' => 'Divorced', 'rus' => 'Разведен (официально)'],
+            ['id' => 27,'value' => 0, 'eng' => 'Open Relationship', 'rus' => 'Свободные отношения']
 
         ];
 
@@ -111,10 +111,10 @@ class DemographicsSeeder extends Seeder
 
         $questions = [
 
-            ['category_id' => 1,'id' => 1,'eng' => 'Education'],
-            ['category_id' => 1,'id' => 2,'eng' => 'Employement'],
-            ['category_id' => 1,'id' => 3,'eng' => 'Race/Ethnicity'],
-            ['category_id' => 1,'id' => 4,'eng' => 'Marital status']
+            ['category_id' => 1,'id' => 1,'eng' => 'Education', 'rus' => 'Образование'],
+            ['category_id' => 1,'id' => 2,'eng' => 'Employement', 'rus' => 'Работа'],
+            ['category_id' => 1,'id' => 3,'eng' => 'Race/Ethnicity', 'rus' => 'Раса / этническая принадлежность'],
+            ['category_id' => 1,'id' => 4,'eng' => 'Marital status', 'rus' => 'Семейное положение']
 
         ];
 
@@ -128,8 +128,8 @@ class DemographicsSeeder extends Seeder
 
         $categories = [
 
-            ['id'=> 1, 'eng' => 'Demographic']
-           
+            ['id'=> 1, 'eng' => 'Demographic', 'rus' => 'демография']
+
         ];
 
         Category::insert($categories);
