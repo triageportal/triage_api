@@ -32,14 +32,14 @@ class AuthController extends Controller
     {
 
         $request -> validate([
-            
+
             'email' => 'required',
             'password' => 'required',
-            'currentTime' => 'required'    
-        
+            'currentTime' => 'required'
+
         ]);
-        
-            
+
+
         $credentials = request(['email', 'password']);
 
         $userTime = $request['currentTime'];
@@ -55,12 +55,12 @@ class AuthController extends Controller
 
         }
 
-        Auth::factory()->setTTL($minutediff);        
+        Auth::factory()->setTTL($minutediff);
 
         if (! $token = Auth::attempt($credentials)) {
 
             return response()->json(['error' => 'Unauthorized'], 401);
-            
+
         }
 
         //Finds the user that corresponds to the latest created token.
@@ -80,10 +80,10 @@ class AuthController extends Controller
 
         }else{
 
-            return response()->json(['error' => 'Unauthorized'], 401); 
+            return response()->json(['error' => 'Unauthorized'], 401);
 
         }
-       
+
     }
 
     /**
@@ -130,7 +130,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         if($user['clinic_id'] != 0){
-            
+
             $users = new User();
 
             $clinicName = $users::where('id', $user['id'])->first()->clinic->name;
@@ -145,12 +145,12 @@ class AuthController extends Controller
 
 
         return response()->json([
-            
+
             'user' => $user,
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => Auth::factory()->getTTL() * 60
-            
+
         ]);
     }
 }
