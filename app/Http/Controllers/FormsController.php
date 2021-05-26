@@ -93,7 +93,7 @@ class FormsController extends Controller
                     $template = new QuestionnaireObj;
                     $cat_template = $template->category;
                     $cat_template['category'] = $result['category'];
-                    $key = strtolower(str_replace(' ', '_', $result['cat_eng']));                    
+                    $key = strtolower(str_replace(' ', '_', $result['cat_eng']));
                     $cat_template['category_id'] = $result['category_id'];
                     $cats[$key] = $cat_template;
 
