@@ -57,8 +57,20 @@ class PremEjac_CalculateResult extends Controller
         $patient_id = $request['patient_id'];
 
         try {
+
             //Getting the last calculated result (total).
-            $last_calc_result = CalculatedResult::where('patient_id', '=', $patient_id)->orderBy('created_at','DESC')->first();
+            $last_calc_result = null;
+
+            //If test date is paased in, the result for that date is returned. Else, the last test result is returned.
+            if(isset($request['test_date'])){
+
+                $last_calc_result = CalculatedResult::where('patient_id', '=', $patient_id)->where('created_at', $request['test_date'])->first();
+
+            }else{
+
+                $last_calc_result = CalculatedResult::where('patient_id', '=', $patient_id)->orderBy('created_at','DESC')->first();
+
+            }
 
             if($last_calc_result != null){
 
@@ -102,7 +114,6 @@ class PremEjac_CalculateResult extends Controller
 
            }
         }
-
 
     }
 
