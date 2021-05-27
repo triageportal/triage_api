@@ -103,17 +103,25 @@ Route::middleware('auth:api')->get('/country_list', 'CountryController@getCountr
 //GET FORMS (get the content of triage questionnaire).
 Route::middleware('auth:api')->get('/forms_content', 'FormsController@getForm');
 
+//TRIAGES
+//ACSS
 //POST ACSS triage results.
 Route::middleware('auth:api')->post('/triage/acss', 'Triage\ACSS_ResultsController@createRecord');
 
+//DEMOGRAPHICS
 //POST Demographics triage results.
 Route::middleware('auth:api')->post('/triage/demographics', 'Triage\Demographics_ResultsController@createRecord');
+//GET Last Demographics triage results.
+Route::middleware('auth:api')->get('/triage/demographics', 'Triage\Demographics_ResultsController@getLastRecord');
 
+//RISK FACTOR
 //POST Risk Factor triage results.
 Route::middleware('auth:api')->post('/triage/risk_factor', 'Triage\RiskFactor_ResultsController@createRecord');
+//GET Last Risk Factor triage results.
+Route::middleware('auth:api')->get('/triage/risk_factor', 'Triage\RiskFactor_ResultsController@getLastRecord');
 
+//PREMATURE EJACULATION
 //POST Premature Ejaculation triage results.
 Route::middleware('auth:api')->post('/triage/premature_ejaculation', 'Triage\PremEjac_ResultsController@createRecord');
-
-//GET Last Premature Ejaculation result.
-Route::middleware('auth:api')->get('/triage/premature_ejaculation', 'Triage\Calculate_Results\PremEjac_CalculateResult@lastCalculatedResult');
+//GET Last/By Date Premature Ejaculation result.
+Route::middleware('auth:api')->get('/triage/premature_ejaculation', 'Triage\PremEjac_ResultsController@lastCalculatedResult');
