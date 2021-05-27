@@ -103,7 +103,7 @@ class PremEjac_ResultsController extends Controller
                     'clinic_name' => $clinic['name'],
                     'created_by' => $created_by['first_name'].', '.$created_by['last_name'],
                     'total_score' => $last_calc_result['total_points'],
-                    'diagnosis' => $this->pe_diagnosis($last_calc_result['total_points'], $request),
+                    'diagnosis' => [$this->pe_diagnosis($last_calc_result['total_points'], $request)],
                     'test_date' => $last_calc_result['created_at']
 
                 ];
