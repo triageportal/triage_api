@@ -109,6 +109,9 @@ Route::middleware('auth:api')->post('/triage/acss', 'Triage\ACSS_ResultsControll
 //POST Demographics triage results.
 Route::middleware('auth:api')->post('/triage/demographics', 'Triage\Demographics_ResultsController@createRecord');
 
+//GET Demographics triage results.
+Route::middleware('auth:api')->get('/triage/demographics', 'Triage\Demographics_ResultsController@getLastRecord');
+
 //POST Risk Factor triage results.
 Route::middleware('auth:api')->post('/triage/risk_factor', 'Triage\RiskFactor_ResultsController@createRecord');
 
@@ -116,4 +119,4 @@ Route::middleware('auth:api')->post('/triage/risk_factor', 'Triage\RiskFactor_Re
 Route::middleware('auth:api')->post('/triage/premature_ejaculation', 'Triage\PremEjac_ResultsController@createRecord');
 
 //GET Last Premature Ejaculation result.
-Route::middleware('auth:api')->get('/triage/premature_ejaculation', 'Triage\Calculate_Results\PremEjac_CalculateResult@lastCalculatedResult');
+Route::middleware('auth:api')->get('/triage/premature_ejaculation', 'Triage\PremEjac_ResultsController@lastCalculatedResult');
