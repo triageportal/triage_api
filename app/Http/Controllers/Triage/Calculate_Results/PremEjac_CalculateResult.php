@@ -7,10 +7,7 @@ use Illuminate\Http\Request;
 use App\triage\premature_ejaculation\Results;
 use App\triage\premature_ejaculation\Response;
 use App\triage\premature_ejaculation\CalculatedResult;
-use App\User;
-use App\Patient;
-use App\Clinic;
-use Exception;
+
 
 class PremEjac_CalculateResult extends Controller
 {
