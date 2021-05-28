@@ -147,10 +147,10 @@ class PremEjac_ResultsController extends Controller
 
             switch ($request['language']) {
                 case 'eng':
-                    return 'PE (Premature Ejaculation) not detected.';
+                    return ['Total points: '.strval($total_points), 'PE (Premature Ejaculation) not detected.'];
                     break;
                 case 'rus':
-                    return 'ПE (преждевременная эякуляция) не обнаружена.';
+                    return ['Общее количество очков: '.strval($total_points), 'ПE (преждевременная эякуляция) не обнаружена.'];
                     break;
 
             }
