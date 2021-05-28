@@ -101,9 +101,8 @@ class PremEjac_ResultsController extends Controller
 
                     'patient_name' => $patient['first_name'].', '.$patient['last_name'],
                     'clinic_name' => $clinic['name'],
-                    'created_by' => $created_by['first_name'].', '.$created_by['last_name'],
-                    'total_score' => $last_calc_result['total_points'],
-                    'diagnosis' => [$this->pe_diagnosis($last_calc_result['total_points'], $request)],
+                    'created_by' => $created_by['first_name'].', '.$created_by['last_name'],                    
+                    'diagnosis' => $this->pe_diagnosis($last_calc_result['total_points'], $request),
                     'test_date' => $last_calc_result['created_at']
 
                 ];
@@ -137,10 +136,10 @@ class PremEjac_ResultsController extends Controller
 
             switch ($request['language']) {
                 case 'eng':
-                    return 'Possible PE (Premature Ejaculation) detected.';
+                    return ['Total points: '.strval($total_points), 'Possible PE (Premature Ejaculation) detected.'];
                     break;
                 case 'rus':
-                    return 'Обнаружена возможная ПЭ (преждевременная эякуляция).';
+                    return ['Общее количество очков: '.strval($total_points), 'Обнаружена возможная ПЭ (преждевременная эякуляция).'];
                     break;
             }
 
@@ -148,10 +147,10 @@ class PremEjac_ResultsController extends Controller
 
             switch ($request['language']) {
                 case 'eng':
-                    return 'PE (Premature Ejaculation) not detected.';
+                    return ['Total points: '.strval($total_points), 'PE (Premature Ejaculation) not detected.'];
                     break;
                 case 'rus':
-                    return 'ПE (преждевременная эякуляция) не обнаружена.';
+                    return ['Общее количество очков: '.strval($total_points), 'ПE (преждевременная эякуляция) не обнаружена.'];
                     break;
 
             }
