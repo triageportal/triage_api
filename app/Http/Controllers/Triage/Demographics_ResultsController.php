@@ -94,7 +94,16 @@ class Demographics_ResultsController extends Controller
     
             }   
     
-            return response()->json($result, 200);
+            if(count($result) > 0){
+
+                return response()->json($result, 200);
+
+            }else{
+
+                return response()->json('No result', 200);
+            
+            }
+            
 
         } catch (Exception $e) {
 
