@@ -100,7 +100,7 @@ class Demographics_ResultsController extends Controller
 
             }else{
 
-                return response()->json('No result', 200);
+                return response()->json('noresult', 200);
             
             }
             
