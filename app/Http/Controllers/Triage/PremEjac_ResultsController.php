@@ -11,6 +11,7 @@ use App\triage\premature_ejaculation\CalculatedResult;
 use App\User;
 use App\Patient;
 use App\Clinic;
+use Carbon\Carbon;
 
 
 class PremEjac_ResultsController extends Controller
@@ -97,13 +98,15 @@ class PremEjac_ResultsController extends Controller
                 //Getting clinic details.
                 $clinic = Clinic::where('id', '=', $patient['clinic_id'])->first();
 
+
+
                 $result = [
 
                     'patient_name' => $patient['first_name'].', '.$patient['last_name'],
                     'clinic_name' => $clinic['name'],
                     'created_by' => $created_by['first_name'].', '.$created_by['last_name'],                    
                     'diagnosis' => $this->pe_diagnosis($last_calc_result['total_points'], $request),
-                    'test_date' => $last_calc_result['created_at']
+                    'test_date' => $this->reformatDate($request, $last_calc_result['created_at'])
 
                 ];
 
@@ -126,6 +129,30 @@ class PremEjac_ResultsController extends Controller
                 return response()->json('error', 500);
 
            }
+        }
+
+    }
+
+    private function reformatDate($request, $date){
+
+        //Reformatting the test date.
+        $createdAt = Carbon::parse($date);
+
+        switch ($request['language']) {
+            case 'eng':
+
+                $createdAt = $createdAt->format('m/d/Y H:i:s');
+                
+                return $createdAt;
+
+                break;
+            case 'rus':
+
+                $createdAt = $createdAt->format('d/m/Y H:i:s');
+
+                return $createdAt;
+
+                break;
         }
 
     }
