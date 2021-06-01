@@ -139,6 +139,7 @@ class PremEjac_ResultsController extends Controller
         $createdAt = Carbon::parse($date);
 
         switch ($request['language']) {
+
             case 'eng':
 
                 $createdAt = $createdAt->format('m/d/Y H:i:s');
@@ -146,6 +147,7 @@ class PremEjac_ResultsController extends Controller
                 return $createdAt;
 
                 break;
+
             case 'rus':
 
                 $createdAt = $createdAt->format('d/m/Y H:i:s');
@@ -153,6 +155,7 @@ class PremEjac_ResultsController extends Controller
                 return $createdAt;
 
                 break;
+
         }
 
     }
