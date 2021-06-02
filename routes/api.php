@@ -75,6 +75,8 @@ function () {
     Route::patch('/clinic', 'ClinicController@clinicUpdate');
     //Used to delete a clinic.
     Route::delete('/clinic', 'ClinicController@clinicDelete');
+    //Used to link triage to clinic.
+    Route::post('/link_triage','ClinicTriageLinkController@linkTriageToClinic');
 
 });
 
@@ -104,6 +106,12 @@ Route::middleware('auth:api')->get('/country_list', 'CountryController@getCountr
 Route::middleware('auth:api')->get('/forms_content', 'FormsController@getForm');
 
 //TRIAGES
+//Get triage list for the clinic.
+Route::middleware('auth:api')->get('/triage_list', 'TriagesController@getTriageList');
+//Get full list of available triages.
+Route::middleware('auth:api')->get('/triage_full_list', 'TriagesController@getFullList');
+
+
 //ACSS
 //POST ACSS triage results.
 Route::middleware('auth:api')->post('/triage/acss', 'Triage\ACSS_ResultsController@createRecord');
