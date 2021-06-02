@@ -17,4 +17,12 @@ class TriageListObj extends Controller
     
     ];
 
+    public $triage_full_list = [
+
+        'triage_id'=>'',
+        'title'=>'',
+        'description'=>''
+
+    ];
+
 }

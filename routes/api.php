@@ -108,6 +108,8 @@ Route::middleware('auth:api')->get('/forms_content', 'FormsController@getForm');
 //TRIAGES
 //Get triage list for the clinic.
 Route::middleware('auth:api')->get('/triage_list', 'TriagesController@getTriageList');
+//Get full list of available triages.
+Route::middleware('auth:api')->get('/triage_full_list', 'TriagesController@getFullList');
 
 
 //ACSS

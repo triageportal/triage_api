@@ -72,5 +72,46 @@ class TriagesController extends Controller
         }
 
     }
+
+    public function getFullList(){
+
+        try {
+            $triages = Triages::all()->toArray();
+
+            $triale_list = [];
+            
+            foreach($triages as $triage){
+
+              $triage_obj = new TriageListObj;
+
+              $result = $triage_obj->triage_full_list;
+
+              $description = TriagesDescription::where('triage_id', '=', $triage['triage_id'])->first()->toArray();
+
+              $result['triage_id'] = $triage['triage_id'];
+
+              $result['title'] = $triage['eng'];
+
+              $result['description'] = $description['eng'];
+
+              array_push( $triale_list, $result);
+
+            }
+
+            return response()->json($triale_list, 200);
+
+        } catch (Exception $e) {
+            if(app()->environment() == 'dev'){
+
+                return $e;
+
+            }else{
+
+                return response()->json('error', 500);
+
+            }
+        }
+
+    }
     
 }
